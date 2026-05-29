@@ -3,592 +3,601 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Momentrise</title>
+  <title>Momentrise — Growth Agency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
   <style>
+    /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a0f;
-      --surface: #12121a;
-      --accent: #6c47ff;
-      --accent2: #ff47a3;
-      --text: #f0f0f8;
-      --muted: #7a7a9a;
-      --border: rgba(108, 71, 255, 0.2);
+      --bg:      #080808;
+      --surface: #0f0f0f;
+      --border:  #1c1c1c;
+      --text:    #f0ede8;
+      --muted:   #555;
+      --accent:  #b8a98a;
+      --font-display: 'Syne', system-ui, sans-serif;
+      --font-body:    'Inter', system-ui, sans-serif;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; font-size: 16px; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
       overflow-x: hidden;
       cursor: none;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Custom cursor */
-    #cursor {
-      width: 12px; height: 12px;
-      background: var(--accent);
+    /* ── Cursor ── */
+    #dot {
+      width: 6px; height: 6px;
+      background: var(--text);
       border-radius: 50%;
       position: fixed;
       pointer-events: none;
       z-index: 9999;
-      transition: transform 0.15s ease, background 0.2s;
       transform: translate(-50%, -50%);
+      transition: background 0.2s, transform 0.15s;
     }
-    #cursor-ring {
-      width: 36px; height: 36px;
-      border: 1.5px solid var(--accent);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9998;
-      transition: transform 0.08s ease, width 0.2s, height 0.2s, border-color 0.2s;
-      transform: translate(-50%, -50%);
-    }
-    body:has(a:hover) #cursor, body:has(button:hover) #cursor { transform: translate(-50%,-50%) scale(2); background: var(--accent2); }
-    body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { width: 60px; height: 60px; border-color: var(--accent2); }
+    body:has(a:hover) #dot,
+    body:has(button:hover) #dot { background: var(--accent); transform: translate(-50%,-50%) scale(2.5); }
 
-    /* Nav */
+    /* ── Nav ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
+      padding: 2rem 4rem;
+      transition: padding 0.4s, background 0.4s;
+    }
+    nav.solid {
       padding: 1.2rem 4rem;
-      background: rgba(10,10,15,0.7);
-      backdrop-filter: blur(20px);
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      transition: padding 0.3s;
     }
-    nav.scrolled { padding: 0.8rem 4rem; }
-    .logo {
-      font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem; font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
     }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links {
+      display: flex; gap: 3rem; list-style: none;
+    }
     .nav-links a {
-      color: var(--muted); text-decoration: none; font-size: 0.9rem;
-      letter-spacing: 0.05em; transition: color 0.2s;
-      position: relative; padding-bottom: 4px;
-    }
-    .nav-links a::after {
-      content: ''; position: absolute; bottom: 0; left: 0;
-      width: 0; height: 1.5px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      transition: width 0.3s;
+      font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { width: 100%; }
-    .nav-cta {
-      padding: 0.55rem 1.4rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 50px; color: #fff;
-      font-size: 0.85rem; font-weight: 600; cursor: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .nav-cta:hover { transform: scale(1.05); box-shadow: 0 0 24px rgba(108,71,255,0.5); }
 
-    /* Hero */
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+
+    /* ── Section base ── */
+    section { padding: 9rem 4rem; }
+    .label {
+      font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 3rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .label::before {
+      content: ''; display: block;
+      width: 24px; height: 1px; background: var(--muted);
+    }
+
+    /* ── Hero ── */
     #hero {
       min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-      padding: 0 2rem;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 4rem 6rem;
       position: relative;
-      overflow: hidden;
     }
-    #hero-canvas {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
+    .hero-index {
+      position: absolute; top: 50%; right: 4rem;
+      transform: translateY(-50%);
+      font-family: var(--font-display);
+      font-size: clamp(18vw, 22vw, 26vw);
+      font-weight: 800; line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px #1a1a1a;
+      user-select: none; pointer-events: none;
+      letter-spacing: -0.04em;
     }
-    .hero-content { position: relative; z-index: 2; max-width: 860px; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.4rem 1rem;
-      background: rgba(108,71,255,0.12);
-      border: 1px solid var(--border);
-      border-radius: 50px; font-size: 0.8rem; color: var(--accent);
-      margin-bottom: 2rem;
-      animation: fadeUp 0.8s ease both;
+    .hero-content { position: relative; z-index: 2; max-width: 820px; }
+    .hero-eyebrow {
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 2rem;
     }
-    .hero-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-
     h1 {
-      font-size: clamp(2.8rem, 7vw, 5.5rem);
-      font-weight: 900; line-height: 1.05;
-      letter-spacing: -2px;
-      animation: fadeUp 0.8s 0.1s ease both;
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6.5vw, 6rem);
+      font-weight: 800; line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--text);
     }
-    h1 span {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    h1 em { font-style: italic; color: var(--accent); }
     .hero-sub {
-      margin-top: 1.5rem;
-      font-size: 1.15rem; color: var(--muted); line-height: 1.7;
-      max-width: 560px; margin-left: auto; margin-right: auto;
-      animation: fadeUp 0.8s 0.2s ease both;
+      margin-top: 2rem;
+      font-size: 1rem; color: var(--muted); line-height: 1.8;
+      max-width: 460px;
     }
-    .hero-btns {
-      margin-top: 2.5rem;
-      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-      animation: fadeUp 0.8s 0.3s ease both;
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      margin-top: 3rem;
+      padding: 0.9rem 2rem;
+      background: var(--text); color: var(--bg);
+      font-size: 0.85rem; font-weight: 600;
+      letter-spacing: 0.04em;
+      border: none; border-radius: 2px;
+      cursor: none;
+      transition: background 0.2s, gap 0.2s;
+      text-decoration: none;
     }
-    .btn-primary {
-      padding: 0.85rem 2.2rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 50px; color: #fff;
-      font-size: 1rem; font-weight: 700; cursor: none;
-      transition: transform 0.2s, box-shadow 0.2s;
+    .hero-cta:hover { background: var(--accent); gap: 1rem; }
+    .hero-cta svg { width: 14px; height: 14px; transition: transform 0.2s; }
+    .hero-cta:hover svg { transform: translateX(3px); }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; right: 4rem;
+      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted);
+      writing-mode: vertical-rl;
+      display: flex; align-items: center; gap: 1rem;
     }
-    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(108,71,255,0.45); }
-    .btn-ghost {
-      padding: 0.85rem 2.2rem;
-      background: transparent;
-      border: 1.5px solid var(--border); border-radius: 50px; color: var(--text);
-      font-size: 1rem; font-weight: 600; cursor: none;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .btn-ghost:hover { border-color: var(--accent); background: rgba(108,71,255,0.08); }
-
-    /* Scroll indicator */
-    .scroll-hint {
-      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-      color: var(--muted); font-size: 0.75rem; letter-spacing: 0.1em;
-      animation: fadeUp 1s 0.8s both;
-    }
-    .scroll-hint .arrow { width: 18px; height: 18px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); animation: bounce 1.5s infinite; }
-    @keyframes bounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(5px)} }
-
-
-    /* Section commons */
-    section { padding: 7rem 4rem; }
-    .section-tag {
-      display: inline-block;
-      padding: 0.3rem 0.9rem;
-      background: rgba(108,71,255,0.12);
-      border: 1px solid var(--border);
-      border-radius: 50px; color: var(--accent);
-      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800; letter-spacing: -1px;
+    .hero-scroll::after {
+      content: ''; display: block;
+      width: 1px; height: 48px; background: var(--border);
     }
 
-    /* Services */
-    #services { background: var(--surface); }
-    .services-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 16px; overflow: hidden;
+    /* ── Services ── */
+    #services { background: var(--bg); border-top: 1px solid var(--border); }
+    .services-list { list-style: none; }
+    .service-item {
+      display: flex; align-items: baseline;
+      gap: 2rem;
+      padding: 2.2rem 0;
+      border-bottom: 1px solid var(--border);
+      cursor: default;
+      transition: padding-left 0.3s;
     }
-    .service-card {
-      background: var(--surface);
-      padding: 2.5rem;
-      transition: background 0.3s;
-      position: relative; overflow: hidden;
+    .service-item:first-child { border-top: 1px solid var(--border); }
+    .service-item:hover { padding-left: 1rem; }
+    .service-num {
+      font-size: 0.75rem; color: var(--muted);
+      letter-spacing: 0.06em; min-width: 28px;
+      transition: color 0.2s;
     }
-    .service-card::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(108,71,255,0.07), transparent);
-      opacity: 0; transition: opacity 0.3s;
+    .service-item:hover .service-num { color: var(--accent); }
+    .service-name {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 700; letter-spacing: -0.02em;
+      flex: 1;
+      transition: color 0.2s;
     }
-    .service-card:hover { background: #1a1a26; }
-    .service-card:hover::before { opacity: 1; }
-    .service-icon {
-      font-size: 2.2rem; margin-bottom: 1.2rem;
-      display: inline-block;
-      transition: transform 0.3s;
+    .service-desc {
+      font-size: 0.85rem; color: var(--muted);
+      max-width: 320px; line-height: 1.6;
+      opacity: 0; transform: translateX(8px);
+      transition: opacity 0.3s, transform 0.3s;
     }
-    .service-card:hover .service-icon { transform: scale(1.2) rotate(-5deg); }
-    .service-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.7rem; }
-    .service-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+    .service-item:hover .service-desc { opacity: 1; transform: none; }
+    .service-arrow {
+      font-size: 1.2rem; color: var(--border);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .service-item:hover .service-arrow { color: var(--accent); transform: translateX(4px); }
 
-    /* Process */
-    #process { background: var(--bg); }
-    .process-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
-    .steps { display: flex; flex-direction: column; gap: 0; max-width: 700px; margin: 0 auto; }
-    .step {
-      display: flex; gap: 2rem; align-items: flex-start;
-      padding: 2rem 0; border-bottom: 1px solid var(--border);
-      position: relative; cursor: default;
-    }
-    .step:last-child { border-bottom: none; }
-    .step-num {
-      font-size: 3rem; font-weight: 900; line-height: 1;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      opacity: 0.25; transition: opacity 0.3s;
-      min-width: 60px;
-    }
-    .step:hover .step-num { opacity: 1; }
-    .step-body h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .step-body p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
-
-    /* Work / Portfolio */
-    #work { background: var(--surface); }
-    .work-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+    /* ── Work ── */
+    #work { background: var(--surface); border-top: 1px solid var(--border); }
     .work-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 1rem;
     }
     .work-card {
-      border-radius: 16px; overflow: hidden;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      transition: transform 0.3s, box-shadow 0.3s;
+      background: var(--surface);
+      padding: 3rem;
       cursor: none;
-    }
-    .work-card:hover { transform: translateY(-8px); box-shadow: 0 24px 60px rgba(0,0,0,0.5); }
-    .work-thumb {
-      height: 220px;
       position: relative; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
+      transition: background 0.3s;
+      text-decoration: none; color: inherit;
+      display: block;
     }
-    .work-thumb-bg {
-      position: absolute; inset: 0;
-      transition: transform 0.4s;
+    .work-card:nth-child(1) { grid-column: span 7; }
+    .work-card:nth-child(2) { grid-column: span 5; }
+    .work-card:nth-child(3) { grid-column: span 12; }
+    .work-card:hover { background: #141414; }
+    .work-year {
+      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 3rem;
     }
-    .work-card:hover .work-thumb-bg { transform: scale(1.05); }
-    .work-thumb-label {
-      position: relative; z-index: 1;
-      font-size: 3rem; font-weight: 900; letter-spacing: -2px;
-      color: rgba(255,255,255,0.15);
+    .work-name {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1;
+      transition: color 0.2s;
     }
-    .work-info { padding: 1.5rem; }
-    .work-info h3 { font-size: 1.1rem; font-weight: 700; }
-    .work-info p { color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; }
+    .work-card:hover .work-name { color: var(--accent); }
+    .work-card:nth-child(3) .work-name { font-size: clamp(2.5rem, 5vw, 5rem); }
+    .work-category {
+      margin-top: 1.5rem;
+      font-size: 0.8rem; color: var(--muted);
+      letter-spacing: 0.06em;
+    }
     .work-tags { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
-    .tag {
-      padding: 0.25rem 0.75rem;
-      background: rgba(108,71,255,0.12);
+    .work-tag {
+      font-size: 0.7rem; letter-spacing: 0.06em;
+      padding: 0.3rem 0.7rem;
       border: 1px solid var(--border);
-      border-radius: 50px; color: var(--accent);
-      font-size: 0.75rem;
+      border-radius: 2px; color: var(--muted);
     }
-
-
-    /* CTA */
-    #cta {
-      background: var(--surface);
-      text-align: center;
+    .work-arrow {
+      position: absolute; bottom: 3rem; right: 3rem;
+      font-size: 1.5rem; color: var(--border);
+      transition: color 0.2s, transform 0.2s;
     }
-    .cta-inner {
-      max-width: 700px; margin: 0 auto;
-      padding: 5rem 3rem;
-      background: linear-gradient(135deg, rgba(108,71,255,0.12), rgba(255,71,163,0.08));
+    .work-card:hover .work-arrow { color: var(--accent); transform: translate(4px, -4px); }
+
+    /* ── Process ── */
+    #process { background: var(--bg); border-top: 1px solid var(--border); }
+    .process-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
       border: 1px solid var(--border);
-      border-radius: 24px;
-      position: relative; overflow: hidden;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 1rem;
     }
-    .cta-inner::before {
-      content: ''; position: absolute;
-      width: 400px; height: 400px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(108,71,255,0.15), transparent 70%);
-      top: -150px; left: 50%; transform: translateX(-50%);
+    .process-step {
+      padding: 3rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
     }
-    .cta-inner h2 { position: relative; }
-    .cta-inner p { color: var(--muted); margin: 1rem 0 2.5rem; position: relative; }
+    .process-step:nth-child(2n) { border-right: none; }
+    .process-step:nth-child(3),
+    .process-step:nth-child(4) { border-bottom: none; }
+    .process-step:hover { background: var(--surface); }
+    .step-num {
+      font-family: var(--font-display);
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--muted); letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+    }
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem; font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 1rem;
+    }
+    .step-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.8; }
 
-    /* Contact form */
-    #contact { background: var(--bg); }
-    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; max-width: 1100px; margin: 0 auto; }
-    .contact-info h2 { margin-bottom: 1rem; }
-    .contact-info p { color: var(--muted); line-height: 1.8; }
-    .contact-details { margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; }
-    .contact-detail { display: flex; align-items: center; gap: 0.8rem; color: var(--muted); font-size: 0.9rem; }
-    .contact-detail .icon { font-size: 1.2rem; }
-    form { display: flex; flex-direction: column; gap: 1.2rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    input, textarea, select {
-      width: 100%; padding: 0.9rem 1.2rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px; color: var(--text);
-      font-size: 0.9rem; font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
+    /* ── Contact ── */
+    #contact { background: var(--surface); border-top: 1px solid var(--border); }
+    .contact-wrap {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8rem; align-items: start;
     }
-    input:focus, textarea:focus, select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(108,71,255,0.15);
+    .contact-left h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      line-height: 1.1; margin-bottom: 2rem;
     }
-    textarea { resize: vertical; min-height: 130px; }
-    .form-submit {
-      width: 100%; padding: 1rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 10px; color: #fff;
-      font-size: 1rem; font-weight: 700; cursor: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-      position: relative; overflow: hidden;
+    .contact-left p { color: var(--muted); font-size: 0.9rem; line-height: 1.8; }
+    .contact-meta { margin-top: 3rem; display: flex; flex-direction: column; gap: 1.2rem; }
+    .contact-meta-item {
+      display: flex; justify-content: space-between;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
     }
-    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(108,71,255,0.4); }
-    .form-submit .ripple {
-      position: absolute; border-radius: 50%;
-      background: rgba(255,255,255,0.3);
-      transform: scale(0);
-      animation: ripple 0.6s linear;
-    }
-    @keyframes ripple { to { transform: scale(4); opacity: 0; } }
+    .contact-meta-item:last-child { border-bottom: none; }
+    .meta-label { color: var(--muted); letter-spacing: 0.04em; }
+    .meta-value { color: var(--text); }
 
-    /* Success message */
+    form { display: flex; flex-direction: column; gap: 0; }
+    .field {
+      display: flex; flex-direction: column;
+      border-bottom: 1px solid var(--border);
+      padding: 1.4rem 0;
+      position: relative;
+    }
+    .field:first-of-type { border-top: 1px solid var(--border); }
+    .field label {
+      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.5rem;
+    }
+    .field input, .field textarea, .field select {
+      background: none; border: none; outline: none;
+      color: var(--text); font-family: var(--font-body);
+      font-size: 0.95rem; padding: 0;
+      transition: color 0.2s;
+    }
+    .field select option { background: var(--bg); }
+    .field textarea { resize: none; min-height: 100px; line-height: 1.6; }
+    .field::after {
+      content: ''; position: absolute; bottom: -1px; left: 0;
+      width: 0; height: 1px; background: var(--accent);
+      transition: width 0.4s ease;
+    }
+    .field:focus-within::after { width: 100%; }
+    .field:focus-within label { color: var(--accent); }
+
+    .form-footer { margin-top: 2.5rem; }
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      background: var(--text); color: var(--bg);
+      font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em;
+      border: none; border-radius: 2px;
+      cursor: none;
+      transition: background 0.2s, gap 0.2s;
+    }
+    .btn-submit:hover { background: var(--accent); gap: 1rem; }
+    .btn-submit svg { width: 14px; height: 14px; transition: transform 0.2s; }
+    .btn-submit:hover svg { transform: translateX(3px); }
+
     .success-msg {
-      display: none; padding: 1rem 1.5rem;
-      background: rgba(72,199,116,0.1);
-      border: 1px solid rgba(72,199,116,0.3);
-      border-radius: 10px; color: #48c774;
-      font-size: 0.9rem; text-align: center;
+      display: none; margin-top: 1.5rem;
+      font-size: 0.85rem; color: var(--accent);
+      letter-spacing: 0.04em;
     }
 
-    /* Footer */
+    /* ── Footer ── */
     footer {
-      background: var(--surface);
+      background: var(--bg);
       border-top: 1px solid var(--border);
-      padding: 3rem 4rem;
+      padding: 2rem 4rem;
       display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 1rem;
     }
-    footer .logo { font-size: 1.2rem; }
-    footer p { color: var(--muted); font-size: 0.85rem; }
+    footer .nav-logo { font-size: 0.95rem; }
+    footer p { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.04em; }
 
-    /* Scroll reveal */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 1.5rem; }
+      nav.solid { padding: 1rem 1.5rem; }
       .nav-links { display: none; }
-      section { padding: 5rem 1.5rem; }
-      .contact-wrap { grid-template-columns: 1fr; gap: 3rem; }
-      .form-row { grid-template-columns: 1fr; }
-      footer { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
+      section { padding: 6rem 1.5rem; }
+      #hero { padding: 0 1.5rem 5rem; }
+      .hero-index { font-size: 38vw; right: 1.5rem; }
+      .hero-scroll { display: none; }
+      .work-card:nth-child(1),
+      .work-card:nth-child(2),
+      .work-card:nth-child(3) { grid-column: span 12; }
+      .process-grid { grid-template-columns: 1fr; }
+      .process-step:nth-child(2n) { border-right: none; }
+      .process-step:nth-child(3) { border-bottom: 1px solid var(--border); }
+      .process-step:nth-child(4) { border-bottom: none; }
+      .contact-wrap { grid-template-columns: 1fr; gap: 4rem; }
+      footer { flex-direction: column; gap: 0.8rem; text-align: center; padding: 2rem 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
+  <div id="dot"></div>
 
   <!-- Nav -->
-  <nav id="navbar">
-    <div class="logo">Momentrise.</div>
+  <nav id="nav">
+    <a href="#" class="nav-logo">Momentrise</a>
     <ul class="nav-links">
       <li><a href="#services">Services</a></li>
-      <li><a href="#process">Process</a></li>
       <li><a href="#work">Work</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
-    <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
   </nav>
 
   <!-- Hero -->
   <section id="hero">
-    <canvas id="hero-canvas"></canvas>
+    <div class="hero-index" aria-hidden="true">M</div>
     <div class="hero-content">
-      <div class="hero-badge"><span class="dot"></span> Open for projects in 2026</div>
-      <h1>We Build Brands<br>That <span>Actually Convert</span></h1>
-      <p class="hero-sub">A full-service creative agency crafting digital experiences that captivate audiences and drive measurable results.</p>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">View Our Work</button>
-        <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Let's Talk</button>
-      </div>
+      <p class="hero-eyebrow reveal">Growth Agency — Est. 2019</p>
+      <h1 class="reveal reveal-d1">
+        Your market<br>
+        isn't waiting.<br>
+        <em>Neither should you.</em>
+      </h1>
+      <p class="hero-sub reveal reveal-d2">
+        We work with ambitious founders and teams to build brands,
+        products, and strategies that move faster than the competition.
+      </p>
+      <a href="#contact" class="hero-cta reveal reveal-d3">
+        Start a project
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 7h12M7 1l6 6-6 6"/>
+        </svg>
+      </a>
     </div>
-    <div class="scroll-hint">
-      <span>Scroll</span>
-      <span class="arrow"></span>
-    </div>
+    <span class="hero-scroll">Scroll</span>
   </section>
 
   <!-- Services -->
   <section id="services">
-    <div class="services-header reveal">
-      <span class="section-tag">What We Do</span>
-      <h2>Services Built for Growth</h2>
-    </div>
-    <div class="services-grid reveal">
-      <div class="service-card">
-        <div class="service-icon">🎨</div>
-        <h3>Brand Identity</h3>
-        <p>From logo to full visual language — we craft brands that leave a lasting impression across every touchpoint.</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">💻</div>
-        <h3>Web Design & Dev</h3>
-        <p>High-performance, beautiful websites engineered for conversion. We build in React, Next.js, and beyond.</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">📱</div>
-        <h3>Mobile Apps</h3>
-        <p>Native and cross-platform apps that users love, built with smooth UX and bulletproof architecture.</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">📈</div>
-        <h3>Digital Marketing</h3>
-        <p>SEO, paid ads, and content strategy that puts your brand in front of the right people at the right time.</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🎬</div>
-        <h3>Motion & Video</h3>
-        <p>Cinematic brand films, animated explainers, and social content that stops thumbs mid-scroll.</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🤖</div>
-        <h3>AI Integration</h3>
-        <p>Automate workflows and elevate products with cutting-edge AI features tailored to your business.</p>
-      </div>
+    <p class="label reveal">What we do</p>
+    <ul class="services-list">
+      <li class="service-item reveal">
+        <span class="service-num">01</span>
+        <span class="service-name">Brand Identity</span>
+        <span class="service-desc">Visual systems built to last — from mark to motion, every element earns its place.</span>
+        <span class="service-arrow">→</span>
+      </li>
+      <li class="service-item reveal">
+        <span class="service-num">02</span>
+        <span class="service-name">Web Design & Development</span>
+        <span class="service-desc">Fast, precise, conversion-focused. We don't ship slow websites.</span>
+        <span class="service-arrow">→</span>
+      </li>
+      <li class="service-item reveal">
+        <span class="service-num">03</span>
+        <span class="service-name">Digital Marketing</span>
+        <span class="service-desc">Paid, organic, content — aligned to one goal: sustainable growth.</span>
+        <span class="service-arrow">→</span>
+      </li>
+      <li class="service-item reveal">
+        <span class="service-num">04</span>
+        <span class="service-name">Mobile Applications</span>
+        <span class="service-desc">Native and cross-platform apps that feel exactly right in the hand.</span>
+        <span class="service-arrow">→</span>
+      </li>
+      <li class="service-item reveal">
+        <span class="service-num">05</span>
+        <span class="service-name">AI Integration</span>
+        <span class="service-desc">Embedding intelligence where it creates real leverage — not just novelty.</span>
+        <span class="service-arrow">→</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Work -->
+  <section id="work">
+    <p class="label reveal">Selected work</p>
+    <div class="work-grid">
+      <a class="work-card reveal" href="#">
+        <p class="work-year">2024</p>
+        <h3 class="work-name">Nova Finance</h3>
+        <p class="work-category">Brand Identity · Web Platform</p>
+        <div class="work-tags">
+          <span class="work-tag">Fintech</span>
+          <span class="work-tag">B2B</span>
+        </div>
+        <span class="work-arrow">↗</span>
+      </a>
+      <a class="work-card reveal reveal-d1" href="#">
+        <p class="work-year">2024</p>
+        <h3 class="work-name">Drift</h3>
+        <p class="work-category">E-Commerce · Growth</p>
+        <div class="work-tags">
+          <span class="work-tag">D2C</span>
+          <span class="work-tag">CRO</span>
+        </div>
+        <span class="work-arrow">↗</span>
+      </a>
+      <a class="work-card reveal reveal-d2" href="#">
+        <p class="work-year">2023</p>
+        <h3 class="work-name">Bloom Health</h3>
+        <p class="work-category">Mobile Application · Brand</p>
+        <div class="work-tags">
+          <span class="work-tag">Health</span>
+          <span class="work-tag">iOS · Android</span>
+        </div>
+        <span class="work-arrow">↗</span>
+      </a>
     </div>
   </section>
 
   <!-- Process -->
   <section id="process">
-    <div class="process-header reveal">
-      <span class="section-tag">How We Work</span>
-      <h2>A Process That Delivers</h2>
-    </div>
-    <div class="steps">
-      <div class="step reveal">
-        <div class="step-num">01</div>
-        <div class="step-body">
-          <h3>Discovery & Strategy</h3>
-          <p>We dive deep into your business goals, audience, and competitive landscape to build a rock-solid strategy before a pixel is designed.</p>
-        </div>
+    <p class="label reveal">How we work</p>
+    <div class="process-grid">
+      <div class="process-step reveal">
+        <p class="step-num">01</p>
+        <h3 class="step-title">Discovery</h3>
+        <p class="step-desc">We map your market, customers, and competitors before any creative work begins. Strategy first — always.</p>
       </div>
-      <div class="step reveal">
-        <div class="step-num">02</div>
-        <div class="step-body">
-          <h3>Design & Prototype</h3>
-          <p>Our designers craft stunning visuals and interactive prototypes. You see and approve every decision before we write a line of code.</p>
-        </div>
+      <div class="process-step reveal reveal-d1">
+        <p class="step-num">02</p>
+        <h3 class="step-title">Design</h3>
+        <p class="step-desc">Every decision is shown and justified. No surprises. You see and approve the work at every stage.</p>
       </div>
-      <div class="step reveal">
-        <div class="step-num">03</div>
-        <div class="step-body">
-          <h3>Build & Develop</h3>
-          <p>Our engineers build fast, scalable, and accessible products — with weekly demos and full transparency throughout.</p>
-        </div>
+      <div class="process-step reveal reveal-d2">
+        <p class="step-num">03</p>
+        <h3 class="step-title">Build</h3>
+        <p class="step-desc">Engineering-grade delivery. Weekly demos, full transparency, and code you'll actually want to maintain.</p>
       </div>
-      <div class="step reveal">
-        <div class="step-num">04</div>
-        <div class="step-body">
-          <h3>Launch & Grow</h3>
-          <p>We handle QA, deployment, and post-launch analytics — and stay by your side as you scale.</p>
-        </div>
+      <div class="process-step reveal reveal-d3">
+        <p class="step-num">04</p>
+        <h3 class="step-title">Launch & Iterate</h3>
+        <p class="step-desc">Launch is not the end. We track performance, learn fast, and keep improving alongside you.</p>
       </div>
-    </div>
-  </section>
-
-  <!-- Work -->
-  <section id="work">
-    <div class="work-header reveal">
-      <span class="section-tag">Portfolio</span>
-      <h2>Work We're Proud Of</h2>
-    </div>
-    <div class="work-grid">
-      <div class="work-card reveal">
-        <div class="work-thumb">
-          <div class="work-thumb-bg" style="background: linear-gradient(135deg, #1a0a3a, #6c47ff);"></div>
-          <div class="work-thumb-label">NOVA</div>
-        </div>
-        <div class="work-info">
-          <h3>Nova Finance Platform</h3>
-          <p>Full rebrand + web app for a FinTech startup</p>
-          <div class="work-tags">
-            <span class="tag">Branding</span>
-            <span class="tag">Web App</span>
-            <span class="tag">UX Design</span>
-          </div>
-        </div>
-      </div>
-      <div class="work-card reveal">
-        <div class="work-thumb">
-          <div class="work-thumb-bg" style="background: linear-gradient(135deg, #0a1a2a, #00c6ff);"></div>
-          <div class="work-thumb-label">DRIFT</div>
-        </div>
-        <div class="work-info">
-          <h3>Drift E-Commerce</h3>
-          <p>Headless commerce platform with 3× conversion lift</p>
-          <div class="work-tags">
-            <span class="tag">E-Commerce</span>
-            <span class="tag">Development</span>
-            <span class="tag">CRO</span>
-          </div>
-        </div>
-      </div>
-      <div class="work-card reveal">
-        <div class="work-thumb">
-          <div class="work-thumb-bg" style="background: linear-gradient(135deg, #1a0a0a, #ff47a3);"></div>
-          <div class="work-thumb-label">BLOOM</div>
-        </div>
-        <div class="work-info">
-          <h3>Bloom Health App</h3>
-          <p>iOS & Android wellness app — 50k downloads in 3 months</p>
-          <div class="work-tags">
-            <span class="tag">Mobile</span>
-            <span class="tag">UI/UX</span>
-            <span class="tag">Strategy</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section id="cta">
-    <div class="cta-inner reveal">
-      <span class="section-tag">Ready to Start?</span>
-      <h2>Let's Build Something<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Extraordinary</span></h2>
-      <p>Book a free 30-minute strategy call and let's explore what's possible.</p>
-      <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book a Free Call →</button>
     </div>
   </section>
 
   <!-- Contact -->
   <section id="contact">
     <div class="contact-wrap">
-      <div class="contact-info reveal">
-        <span class="section-tag">Contact</span>
-        <h2>Start a Conversation</h2>
-        <p>Tell us about your project and we'll get back to you within 24 hours with a tailored proposal.</p>
-        <div class="contact-details">
-          <div class="contact-detail"><span class="icon">📧</span> hello@momentrise.co</div>
-          <div class="contact-detail"><span class="icon">📞</span> +1 (555) 000-1234</div>
-          <div class="contact-detail"><span class="icon">📍</span> New York · London · Cape Town</div>
+      <div class="contact-left reveal">
+        <p class="label" style="margin-bottom:2rem">Get in touch</p>
+        <h2>Ready to move?<br>Let's talk.</h2>
+        <p>Tell us about your project. We'll respond within one business day with an honest assessment of how we can help.</p>
+        <div class="contact-meta">
+          <div class="contact-meta-item">
+            <span class="meta-label">Email</span>
+            <span class="meta-value">hello@momentrise.co</span>
+          </div>
+          <div class="contact-meta-item">
+            <span class="meta-label">Phone</span>
+            <span class="meta-value">+1 (555) 000-1234</span>
+          </div>
+          <div class="contact-meta-item">
+            <span class="meta-label">Based in</span>
+            <span class="meta-value">New York · London · Cape Town</span>
+          </div>
         </div>
       </div>
-      <div class="reveal">
+
+      <div class="reveal reveal-d1">
         <form id="contact-form">
-          <div class="form-row">
-            <input type="text" placeholder="First Name" required />
-            <input type="text" placeholder="Last Name" required />
+          <div class="field">
+            <label for="name">Full name</label>
+            <input id="name" type="text" placeholder="Alex Johnson" required />
           </div>
-          <input type="email" placeholder="Email Address" required />
-          <input type="text" placeholder="Company (optional)" />
-          <select>
-            <option value="" disabled selected>Select a service</option>
-            <option>Brand Identity</option>
-            <option>Web Design & Dev</option>
-            <option>Mobile App</option>
-            <option>Digital Marketing</option>
-            <option>Motion & Video</option>
-            <option>AI Integration</option>
-            <option>Other</option>
-          </select>
-          <textarea placeholder="Tell us about your project..."></textarea>
-          <button type="submit" class="form-submit">Send Message</button>
-          <div class="success-msg" id="success-msg">✅ Message sent! We'll be in touch within 24 hours.</div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="alex@company.com" required />
+          </div>
+          <div class="field">
+            <label for="company">Company</label>
+            <input id="company" type="text" placeholder="Optional" />
+          </div>
+          <div class="field">
+            <label for="service">Service</label>
+            <select id="service">
+              <option value="" disabled selected>Select one</option>
+              <option>Brand Identity</option>
+              <option>Web Design &amp; Development</option>
+              <option>Mobile Application</option>
+              <option>Digital Marketing</option>
+              <option>AI Integration</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" placeholder="Tell us what you're building..." required></textarea>
+          </div>
+          <div class="form-footer">
+            <button type="submit" class="btn-submit">
+              Send message
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 7h12M7 1l6 6-6 6"/>
+              </svg>
+            </button>
+            <p class="success-msg" id="success-msg">Message received — we'll be in touch shortly.</p>
+          </div>
         </form>
       </div>
     </div>
@@ -596,135 +605,40 @@
 
   <!-- Footer -->
   <footer>
-    <div class="logo">Momentrise.</div>
+    <a href="#" class="nav-logo">Momentrise</a>
     <p>© 2026 Momentrise. All rights reserved.</p>
   </footer>
 
   <script>
     // Cursor
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursor-ring');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    function animCursor() {
-      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-      requestAnimationFrame(animCursor);
-    }
-    animCursor();
-
-    // Hero canvas — floating particles
-    const canvas = document.getElementById('hero-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-    resize();
-    window.addEventListener('resize', resize);
-
-    class Particle {
-      constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.4;
-        this.vy = (Math.random() - 0.5) * 0.4;
-        this.r = Math.random() * 1.5 + 0.3;
-        this.alpha = Math.random() * 0.5 + 0.1;
-        this.color = Math.random() > 0.5 ? '108,71,255' : '255,71,163';
-      }
-      update() {
-        this.x += this.vx; this.y += this.vy;
-        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
-        ctx.fill();
-      }
-    }
-
-    for (let i = 0; i < 120; i++) particles.push(new Particle());
-
-    // Mouse repel
-    let mouseX = -9999, mouseY = -9999;
-    canvas.addEventListener('mousemove', e => {
-      const r = canvas.getBoundingClientRect();
-      mouseX = e.clientX - r.left; mouseY = e.clientY - r.top;
+    const dot = document.getElementById('dot');
+    document.addEventListener('mousemove', e => {
+      dot.style.left = e.clientX + 'px';
+      dot.style.top  = e.clientY + 'px';
     });
 
-    function drawLines() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          if (dist < 100) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(108,71,255,${0.12 * (1 - dist/100)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        const dx = p.x - mouseX, dy = p.y - mouseY;
-        const dist = Math.sqrt(dx*dx+dy*dy);
-        if (dist < 80) {
-          p.vx += (dx/dist) * 0.3;
-          p.vy += (dy/dist) * 0.3;
-          p.vx *= 0.95; p.vy *= 0.95;
-        }
-        p.update(); p.draw();
-      });
-      drawLines();
-      requestAnimationFrame(animate);
-    }
-    animate();
-
-    // Navbar scroll
-    const navbar = document.getElementById('navbar');
+    // Nav solidify on scroll
+    const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 50);
-    });
+      nav.classList.toggle('solid', window.scrollY > 60);
+    }, { passive: true });
 
     // Scroll reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    reveals.forEach(el => io.observe(el));
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Form submit
+    // Contact form
     document.getElementById('contact-form').addEventListener('submit', function(e) {
       e.preventDefault();
-      const btn = this.querySelector('.form-submit');
-      btn.textContent = 'Sending...';
-      btn.style.opacity = '0.7';
+      const btn = this.querySelector('.btn-submit');
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
       setTimeout(() => {
         btn.style.display = 'none';
         document.getElementById('success-msg').style.display = 'block';
-      }, 1200);
-    });
-
-    // Ripple on form submit
-    document.querySelector('.form-submit').addEventListener('click', function(e) {
-      const ripple = document.createElement('span');
-      ripple.className = 'ripple';
-      const rect = this.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height);
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = e.clientX - rect.left - size/2 + 'px';
-      ripple.style.top = e.clientY - rect.top - size/2 + 'px';
-      this.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
+      }, 1000);
     });
   </script>
 </body>
