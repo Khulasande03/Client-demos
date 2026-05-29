@@ -167,26 +167,6 @@
     .scroll-hint .arrow { width: 18px; height: 18px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); animation: bounce 1.5s infinite; }
     @keyframes bounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(5px)} }
 
-    /* Stats */
-    #stats {
-      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .stat-item {
-      flex: 1; min-width: 180px;
-      padding: 3rem 2rem; text-align: center;
-      border-right: 1px solid var(--border);
-      transition: background 0.3s;
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-item:hover { background: rgba(108,71,255,0.05); }
-    .stat-num {
-      font-size: 3rem; font-weight: 900; line-height: 1;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .stat-label { margin-top: 0.5rem; color: var(--muted); font-size: 0.85rem; letter-spacing: 0.05em; }
 
     /* Section commons */
     section { padding: 7rem 4rem; }
@@ -301,39 +281,6 @@
       font-size: 0.75rem;
     }
 
-    /* Testimonials */
-    #testimonials { background: var(--bg); }
-    .testi-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
-    .testi-track-wrap { overflow: hidden; position: relative; }
-    .testi-track-wrap::before,
-    .testi-track-wrap::after {
-      content: ''; position: absolute; top: 0; bottom: 0; width: 100px; z-index: 2;
-    }
-    .testi-track-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
-    .testi-track-wrap::after { right: 0; background: linear-gradient(-90deg, var(--bg), transparent); }
-    .testi-track {
-      display: flex; gap: 1.5rem;
-      animation: scroll-left 30s linear infinite;
-      width: max-content;
-    }
-    .testi-track:hover { animation-play-state: paused; }
-    @keyframes scroll-left { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-    .testi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem; width: 320px; flex-shrink: 0;
-    }
-    .testi-stars { color: #ffd700; font-size: 0.9rem; margin-bottom: 1rem; }
-    .testi-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
-    .testi-author { display: flex; align-items: center; gap: 0.8rem; margin-top: 1.5rem; }
-    .testi-avatar {
-      width: 40px; height: 40px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.9rem; color: #fff;
-    }
-    .testi-author-info strong { display: block; font-size: 0.9rem; }
-    .testi-author-info span { font-size: 0.8rem; color: var(--muted); }
 
     /* CTA */
     #cta {
@@ -417,15 +364,6 @@
     }
     footer .logo { font-size: 1.2rem; }
     footer p { color: var(--muted); font-size: 0.85rem; }
-    .social-links { display: flex; gap: 1rem; }
-    .social-link {
-      width: 36px; height: 36px;
-      border: 1px solid var(--border); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--muted); text-decoration: none; font-size: 0.85rem;
-      transition: border-color 0.2s, color 0.2s, transform 0.2s;
-    }
-    .social-link:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
 
     /* Scroll reveal */
     .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -452,7 +390,6 @@
       <li><a href="#services">Services</a></li>
       <li><a href="#process">Process</a></li>
       <li><a href="#work">Work</a></li>
-      <li><a href="#testimonials">Clients</a></li>
     </ul>
     <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
   </nav>
@@ -474,26 +411,6 @@
       <span class="arrow"></span>
     </div>
   </section>
-
-  <!-- Stats -->
-  <div id="stats">
-    <div class="stat-item reveal">
-      <div class="stat-num" data-target="150">0</div>
-      <div class="stat-label">Projects Delivered</div>
-    </div>
-    <div class="stat-item reveal">
-      <div class="stat-num" data-target="98">0</div>
-      <div class="stat-label">Client Satisfaction %</div>
-    </div>
-    <div class="stat-item reveal">
-      <div class="stat-num" data-target="7">0</div>
-      <div class="stat-label">Years of Excellence</div>
-    </div>
-    <div class="stat-item reveal">
-      <div class="stat-num" data-target="40">0</div>
-      <div class="stat-label">Industry Awards</div>
-    </div>
-  </div>
 
   <!-- Services -->
   <section id="services">
@@ -628,19 +545,6 @@
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <section id="testimonials">
-    <div class="testi-header reveal">
-      <span class="section-tag">Testimonials</span>
-      <h2>What Our Clients Say</h2>
-    </div>
-    <div class="testi-track-wrap reveal">
-      <div class="testi-track" id="testi-track">
-        <!-- duplicated for infinite scroll -->
-      </div>
-    </div>
-  </section>
-
   <!-- CTA -->
   <section id="cta">
     <div class="cta-inner reveal">
@@ -694,12 +598,6 @@
   <footer>
     <div class="logo">Apex.</div>
     <p>© 2026 Apex Agency. All rights reserved.</p>
-    <div class="social-links">
-      <a class="social-link" href="#">𝕏</a>
-      <a class="social-link" href="#">in</a>
-      <a class="social-link" href="#">▶</a>
-      <a class="social-link" href="#">⌘</a>
-    </div>
   </footer>
 
   <script>
@@ -803,56 +701,6 @@
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
     }, { threshold: 0.12 });
     reveals.forEach(el => io.observe(el));
-
-    // Counter animation
-    function animateCount(el, target) {
-      let start = 0;
-      const duration = 1800;
-      const startTime = performance.now();
-      function update(now) {
-        const progress = Math.min((now - startTime) / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3);
-        el.textContent = Math.round(ease * target) + (el.dataset.suffix || '');
-        if (progress < 1) requestAnimationFrame(update);
-      }
-      requestAnimationFrame(update);
-    }
-
-    const statNums = document.querySelectorAll('.stat-num[data-target]');
-    const statsIO = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          animateCount(e.target, parseInt(e.target.dataset.target));
-          statsIO.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.5 });
-    statNums.forEach(el => statsIO.observe(el));
-
-    // Testimonials data + infinite marquee
-    const testimonials = [
-      { text: "Apex transformed our brand from a forgettable startup into a market leader. The ROI has been extraordinary — 3× revenue in 6 months.", author: "Sarah M.", role: "CEO, Nova Finance", color: "#6c47ff" },
-      { text: "The team's attention to detail is unreal. Every pixel, every interaction feels intentional. Our app has a 4.9-star rating and users love it.", author: "James T.", role: "Founder, Bloom Health", color: "#ff47a3" },
-      { text: "We've worked with three agencies before Apex. None came close. They deliver on time, on budget, and beyond expectations.", author: "Priya K.", role: "CMO, Drift", color: "#00c6ff" },
-      { text: "Our conversion rate went from 1.2% to 4.7% after the redesign. That's hundreds of thousands in extra revenue. Worth every cent.", author: "Marcus B.", role: "Head of Growth, Pulse", color: "#6c47ff" },
-      { text: "Not just a vendor — a genuine partner. They challenged our assumptions and pushed us to build a better product.", author: "Aisha L.", role: "CPO, Kora", color: "#ff47a3" },
-      { text: "Fast, sharp, and deeply collaborative. Apex is the only agency we'll ever use. Highly recommend to anyone serious about their brand.", author: "David R.", role: "Founder, Skyline Studios", color: "#00c6ff" },
-    ];
-
-    const track = document.getElementById('testi-track');
-    const allCards = [...testimonials, ...testimonials]; // duplicate for seamless loop
-    allCards.forEach(t => {
-      const card = document.createElement('div');
-      card.className = 'testi-card';
-      card.innerHTML = `
-        <div class="testi-stars">★★★★★</div>
-        <p>"${t.text}"</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:${t.color}">${t.author[0]}</div>
-          <div class="testi-author-info"><strong>${t.author}</strong><span>${t.role}</span></div>
-        </div>`;
-      track.appendChild(card);
-    });
 
     // Form submit
     document.getElementById('contact-form').addEventListener('submit', function(e) {
