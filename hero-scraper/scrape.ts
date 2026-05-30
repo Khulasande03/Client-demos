@@ -1,30 +1,44 @@
 /**
  * 21st.dev Hero Scraper + Framer Motion Injector
  *
- * Sources hero components from the open-source serafimcloud/21st GitHub repo
- * (21st.dev blocks all bots/scrapers, but their code is MIT-licensed on GitHub).
- *
  * Pipeline:
- *   1. Clone/pull serafimcloud/21st (sparse, components only)
+ *   1. Clone/pull serafimcloud/21st (GitHub, MIT license)
  *   2. Find all hero .tsx files
- *   3. Claude API → inject Framer Motion animations
+ *   3. Gemini API → inject Framer Motion animations
  *   4. Write animated .tsx to ./components/heroes/
  *
  * Usage:
- *   npm run scrape              — scrape all heroes from repo
- *   npm run scrape -- --file path/to/hero.tsx  — animate single local file
+ *   npm run scrape                          — animate all heroes
+ *   npm run scrape -- --file path/to/hero.tsx  — single file
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import fs from 'fs/promises';
 import path from 'path';
 import { execSync } from 'child_process';
 import 'dotenv/config';
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
 const OUT_DIR = './components/heroes';
 const REPO_DIR = '/tmp/21st-repo';
 const REPO_URL = 'https://github.com/serafimcloud/21st.git';
+
+const SYSTEM_PROMPT = `You are an expert React/Framer Motion developer. Add Framer Motion animations to hero components.
+
+Rules:
+- Add "use client" at top (if not present)
+- Add imports: { motion, useScroll, useTransform, useReducedMotion } from "framer-motion"
+- Headline (h1/h2): wrap in motion.h1/h2, initial={{opacity:0,y:32}}, animate={{opacity:1,y:0}}, transition={{duration:0.6,ease:[0.16,1,0.3,1]}}
+- Subtext/p: motion.p, initial={{opacity:0,y:20}}, animate={{opacity:1,y:0}}, transition={{delay:0.15,duration:0.5,ease:[0.16,1,0.3,1]}}
+- CTA button container: motion.div, initial={{opacity:0,scale:0.95}}, animate={{opacity:1,scale:1}}, transition={{delay:0.3,type:"spring",stiffness:300,damping:24}}
+- Badge/eyebrow: motion.div, initial={{opacity:0,y:-12}}, animate={{opacity:1,y:0}}, transition={{duration:0.4}}
+- List items: staggerChildren:0.08 on parent motion.div + each child initial={{opacity:0,x:-16}} animate={{opacity:1,x:0}}
+- Hero background/image: useScroll + useTransform parallax — const {scrollY}=useScroll(); const bgY=useTransform(scrollY,[0,500],[0,-120]); style={{y:bgY}}
+- Accessibility: const prefersReduced=useReducedMotion(); wrap all transitions: transition={prefersReduced?{duration:0}:{...actual}}
+- Keep ALL original props, classes, styles, imports, and logic unchanged
+- Return ONLY complete .tsx code, no markdown fences, no explanation`;
 
 // ── Step 1: clone/update repo ────────────────────────────────────────────────
 async function ensureRepo(): Promise<void> {
@@ -33,11 +47,8 @@ async function ensureRepo(): Promise<void> {
     console.log('📦 Updating 21st.dev repo...');
     execSync(`git -C ${REPO_DIR} pull --quiet`, { stdio: 'pipe' });
   } catch {
-    console.log('📦 Cloning 21st.dev repo (components only)...');
-    execSync(
-      `git clone --depth=1 --filter=blob:none ${REPO_URL} ${REPO_DIR}`,
-      { stdio: 'pipe' }
-    );
+    console.log('📦 Cloning 21st.dev repo...');
+    execSync(`git clone --depth=1 --filter=blob:none ${REPO_URL} ${REPO_DIR}`, { stdio: 'pipe' });
   }
 }
 
@@ -50,38 +61,21 @@ async function findHeroFiles(): Promise<string[]> {
   return result.trim().split('\n').filter(Boolean);
 }
 
-// ── Step 3: inject Framer Motion via Claude API ──────────────────────────────
+// ── Step 3: inject Framer Motion via Gemini ──────────────────────────────────
 async function injectFramerMotion(source: string, componentName: string): Promise<string> {
   console.log(`  ✨ Animating: ${componentName}`);
 
-  const msg = await anthropic.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 4096,
-    system: `You are an expert React/Framer Motion developer. Add Framer Motion animations to hero components.
+  const result = await model.generateContent(
+    `${SYSTEM_PROMPT}\n\nAdd Framer Motion animations to this hero component:\n\n${source}`
+  );
 
-Rules:
-- Add "use client" at top (if not present)
-- Add imports: { motion, useScroll, useTransform, useReducedMotion } from "framer-motion"
-- Headline (h1/h2): wrap in motion.h1/h2, initial={{opacity:0,y:32}}, animate={{opacity:1,y:0}}, transition={{duration:0.6,ease:[0.16,1,0.3,1]}}
-- Subtext/p: motion.p, initial={{opacity:0,y:20}}, animate={{opacity:1,y:0}}, transition={{delay:0.15,duration:0.5,ease:[0.16,1,0.3,1]}}
-- CTA button container: motion.div, initial={{opacity:0,scale:0.95}}, animate={{opacity:1,scale:1}}, transition={{delay:0.3,type:"spring",stiffness:300,damping:24}}
-- Badge/eyebrow: motion.div, initial={{opacity:0,y:-12}}, animate={{opacity:1,y:0}}, transition={{duration:0.4}}
-- List items: use staggerChildren:0.08 on parent motion.div + each child has initial={{opacity:0,x:-16}} animate={{opacity:1,x:0}}
-- Hero background/image: add useScroll + useTransform for parallax, const {scrollY}=useScroll(); const bgY=useTransform(scrollY,[0,500],[0,-120]); apply style={{y:bgY}}
-- Accessibility: const prefersReduced=useReducedMotion(); wrap all transition objects: transition={prefersReduced?{duration:0}:{...actual}}
-- Keep ALL original props, classes, styles, imports, and logic unchanged
-- Return ONLY complete .tsx code, no markdown fences, no explanation`,
-    messages: [{
-      role: 'user',
-      content: `Add Framer Motion animations to this hero component:\n\n${source}`,
-    }],
-  });
-
-  const text = msg.content[0].type === 'text' ? msg.content[0].text : source;
-  return text.replace(/^```(?:tsx?|jsx?)?\n?/, '').replace(/\n?```$/, '').trim();
+  let text = result.response.text();
+  // Strip markdown fences if model adds them
+  text = text.replace(/^```(?:tsx?|jsx?)?\n?/, '').replace(/\n?```$/, '').trim();
+  return text;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Helper ────────────────────────────────────────────────────────────────────
 function toComponentName(filePath: string): string {
   return path.basename(filePath, '.tsx')
     .split(/[-_]/)
@@ -91,14 +85,13 @@ function toComponentName(filePath: string): string {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error('❌ ANTHROPIC_API_KEY missing in .env');
+  if (!process.env.GEMINI_API_KEY) {
+    console.error('❌ GEMINI_API_KEY missing in .env');
     process.exit(1);
   }
 
   await fs.mkdir(OUT_DIR, { recursive: true });
 
-  // Mode: single file passed via --file flag
   const fileFlag = process.argv.indexOf('--file');
   let heroFiles: string[] = [];
 
@@ -108,7 +101,7 @@ async function main() {
   } else {
     await ensureRepo();
     heroFiles = await findHeroFiles();
-    console.log(`Found ${heroFiles.length} hero file(s) in repo\n`);
+    console.log(`Found ${heroFiles.length} hero file(s)\n`);
   }
 
   if (!heroFiles.length) {
@@ -126,7 +119,7 @@ async function main() {
       const source = await fs.readFile(heroPath, 'utf8');
       if (source.length < 50) { results.push({ name, file: '', status: 'too small' }); continue; }
 
-      // Skip if already animated
+      // Skip already animated
       try {
         await fs.access(outFile);
         console.log(`  ⏭  Skip ${name} (already exists)`);
@@ -139,7 +132,7 @@ async function main() {
       console.log(`  ✅ ${outFile}`);
       results.push({ name, file: outFile, status: 'ok' });
 
-      await new Promise(r => setTimeout(r, 500)); // rate limit cushion
+      await new Promise(r => setTimeout(r, 300));
     } catch (err: any) {
       console.error(`  ✗ ${name}: ${err.message}`);
       results.push({ name, file: '', status: `error: ${err.message}` });
@@ -152,7 +145,7 @@ async function main() {
     console.log(`${icon} ${r.name}: ${r.status === 'ok' ? r.file : r.status}`);
   }
   const ok = results.filter(r => r.status === 'ok').length;
-  console.log(`\n${ok} new hero(es) animated → ${path.resolve(OUT_DIR)}`);
+  console.log(`\n${ok} hero(es) animated → ${path.resolve(OUT_DIR)}`);
 }
 
 main().catch(err => { console.error(err); process.exit(1); });
