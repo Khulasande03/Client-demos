@@ -4,23 +4,30 @@
  * Pipeline:
  *   1. Clone/pull serafimcloud/21st (GitHub, MIT license)
  *   2. Find all hero .tsx files
- *   3. Gemini API → inject Framer Motion animations
+ *   3. OpenRouter (Gemini 2.0 Flash free) → inject Framer Motion
  *   4. Write animated .tsx to ./components/heroes/
  *
  * Usage:
- *   npm run scrape                          — animate all heroes
+ *   npm run scrape                             — animate all heroes
  *   npm run scrape -- --file path/to/hero.tsx  — single file
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import fs from 'fs/promises';
 import path from 'path';
 import { execSync } from 'child_process';
 import 'dotenv/config';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+const client = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY!,
+  defaultHeaders: {
+    'HTTP-Referer': 'https://github.com/khulasande03/client-demos',
+    'X-Title': 'Hero Scraper',
+  },
+});
 
+const MODEL = 'google/gemini-2.0-flash-exp:free';
 const OUT_DIR = './components/heroes';
 const REPO_DIR = '/tmp/21st-repo';
 const REPO_URL = 'https://github.com/serafimcloud/21st.git';
@@ -61,16 +68,20 @@ async function findHeroFiles(): Promise<string[]> {
   return result.trim().split('\n').filter(Boolean);
 }
 
-// ── Step 3: inject Framer Motion via Gemini ──────────────────────────────────
+// ── Step 3: inject Framer Motion via OpenRouter ──────────────────────────────
 async function injectFramerMotion(source: string, componentName: string): Promise<string> {
   console.log(`  ✨ Animating: ${componentName}`);
 
-  const result = await model.generateContent(
-    `${SYSTEM_PROMPT}\n\nAdd Framer Motion animations to this hero component:\n\n${source}`
-  );
+  const response = await client.chat.completions.create({
+    model: MODEL,
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: `Add Framer Motion animations to this hero component:\n\n${source}` },
+    ],
+    max_tokens: 4096,
+  });
 
-  let text = result.response.text();
-  // Strip markdown fences if model adds them
+  let text = response.choices[0]?.message?.content ?? source;
   text = text.replace(/^```(?:tsx?|jsx?)?\n?/, '').replace(/\n?```$/, '').trim();
   return text;
 }
@@ -85,8 +96,8 @@ function toComponentName(filePath: string): string {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
-  if (!process.env.GEMINI_API_KEY) {
-    console.error('❌ GEMINI_API_KEY missing in .env');
+  if (!process.env.OPENROUTER_API_KEY) {
+    console.error('❌ OPENROUTER_API_KEY missing in .env');
     process.exit(1);
   }
 
@@ -132,7 +143,7 @@ async function main() {
       console.log(`  ✅ ${outFile}`);
       results.push({ name, file: outFile, status: 'ok' });
 
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 500));
     } catch (err: any) {
       console.error(`  ✗ ${name}: ${err.message}`);
       results.push({ name, file: '', status: `error: ${err.message}` });
