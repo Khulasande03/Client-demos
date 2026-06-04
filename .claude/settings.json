@@ -1,0 +1,12 @@
+{
+    "permissions": {
+        "allow": [
+            "mcp__c4cad8ae-d0c9-4979-9830-ec3bc4c09f57__update_workflow",
+            "mcp__c4cad8ae-d0c9-4979-9830-ec3bc4c09f57__publish_workflow",
+            "mcp__c4cad8ae-d0c9-4979-9830-ec3bc4c09f57__get_workflow_details",
+            "mcp__c4cad8ae-d0c9-4979-9830-ec3bc4c09f57__search_executions",
+            "mcp__c4cad8ae-d0c9-4979-9830-ec3bc4c09f57__get_execution",
+            "mcp__c4cad8ae-d0c9-4979-9830-ec3bc4c09f57__execute_workflow"
+        ]
+    }
+}
