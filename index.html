@@ -12,417 +12,317 @@
 <body class="loading">
 
   <!-- Preloader -->
-  <div class="preloader" id="preloader">
-    <div class="preloader-inner">
-      <div class="preloader-count" id="preloaderCount">0</div>
-      <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
-      <div class="preloader-label">Loading experience</div>
+  <div id="preloader">
+    <div class="pre-inner">
+      <div class="pre-logo">VOID<span>.</span></div>
+      <div class="pre-bar"><div id="preloaderFill"></div></div>
+      <div id="preloaderCount">00</div>
     </div>
   </div>
 
   <!-- Custom cursor -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-follower" id="cursorFollower"></div>
-
-  <!-- Noise overlay -->
-  <div class="noise"></div>
+  <div id="cursor"></div>
+  <div id="cursorFollower"></div>
 
   <!-- Navigation -->
-  <nav class="nav" id="nav">
-    <div class="nav-inner">
-      <a href="#" class="logo" data-magnetic>
-        <span class="logo-text">VOID</span>
-        <span class="logo-dot"></span>
-      </a>
-      <div class="nav-center">
-        <span class="nav-tagline">Digital Experience Studio</span>
-      </div>
-      <div class="nav-right">
-        <a href="#work" class="nav-link" data-magnetic>Work</a>
-        <a href="#services" class="nav-link" data-magnetic>Services</a>
-        <a href="#about" class="nav-link" data-magnetic>About</a>
-        <a href="#contact" class="btn-outline" data-magnetic>Let's talk ↗</a>
-      </div>
-      <button class="burger" id="burger">
-        <span></span><span></span>
-      </button>
-    </div>
+  <nav id="nav">
+    <a href="#" class="nav-logo">VOID<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta" data-magnetic>Let's talk</a>
+    <button class="burger" id="burger" aria-label="menu">
+      <span></span><span></span>
+    </button>
   </nav>
 
   <!-- Mobile nav -->
-  <div class="mobile-nav" id="mobileNav">
-    <div class="mobile-nav-links">
-      <a href="#work" class="mobile-link">Work</a>
-      <a href="#services" class="mobile-link">Services</a>
-      <a href="#about" class="mobile-link">About</a>
-      <a href="#contact" class="mobile-link">Contact</a>
+  <div id="mobileNav">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content" id="heroContent">
+      <div class="hero-label" data-reveal>Digital Experience Studio</div>
+      <h1 class="hero-title">
+        <span class="hero-line" data-split>We Build</span>
+        <span class="hero-line accent" data-split>Impossible</span>
+        <span class="hero-line" data-split>Interfaces.</span>
+      </h1>
+      <p class="hero-sub" data-reveal>
+        Award-winning web experiences that merge art, technology,<br>
+        and human behaviour into unforgettable digital worlds.
+      </p>
+      <div class="hero-actions" data-reveal>
+        <a href="#work" class="btn-primary" data-magnetic>
+          <span>View our work</span>
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        </a>
+        <a href="#contact" class="btn-ghost">Start a project</a>
+      </div>
+      <div class="hero-scroll-hint">
+        <div class="scroll-line"></div>
+        <span>Scroll</span>
+      </div>
     </div>
-    <div class="mobile-nav-footer">
-      <span>© 2025 VOID Studio</span>
+    <div class="hero-counter-wrap">
+      <span id="heroCounter">00</span>
+      <span class="hero-counter-label">Projects delivered</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="tickerTrack">
+      <span>Brand Identity</span><span class="dot">✦</span>
+      <span>Web Design</span><span class="dot">✦</span>
+      <span>3D Experiences</span><span class="dot">✦</span>
+      <span>Motion Design</span><span class="dot">✦</span>
+      <span>Digital Strategy</span><span class="dot">✦</span>
+      <span>UI / UX</span><span class="dot">✦</span>
+      <span>Brand Identity</span><span class="dot">✦</span>
+      <span>Web Design</span><span class="dot">✦</span>
+      <span>3D Experiences</span><span class="dot">✦</span>
+      <span>Motion Design</span><span class="dot">✦</span>
+      <span>Digital Strategy</span><span class="dot">✦</span>
+      <span>UI / UX</span><span class="dot">✦</span>
     </div>
   </div>
 
-  <!-- Hero -->
-  <section class="hero" id="hero">
-    <canvas class="hero-canvas" id="heroCanvas"></canvas>
-    <div class="hero-content">
-      <div class="hero-eyebrow">
-        <span class="eyebrow-line"></span>
-        <span class="eyebrow-text" data-scramble="Available for 2025 projects">Available for 2025 projects</span>
+  <!-- WORK -->
+  <section id="work">
+    <div class="section-header" data-reveal>
+      <span class="section-tag">Selected Work</span>
+      <h2 data-split>What we've built</h2>
+    </div>
+    <div class="work-track-outer" id="workTrack">
+      <div class="work-track" id="workInner">
+
+        <div class="work-card" data-tilt>
+          <div class="work-card-img" style="background:linear-gradient(135deg,#c8ff00 0%,#080808 100%)">
+            <div class="work-card-3d-obj obj-1"></div>
+          </div>
+          <div class="work-card-info">
+            <span class="work-tag">Brand / Web</span>
+            <h3>Neon Collective</h3>
+            <p>Full brand identity & immersive e-commerce experience</p>
+          </div>
+          <div class="work-card-num">01</div>
+        </div>
+
+        <div class="work-card" data-tilt>
+          <div class="work-card-img" style="background:linear-gradient(135deg,#ff3cac 0%,#080808 100%)">
+            <div class="work-card-3d-obj obj-2"></div>
+          </div>
+          <div class="work-card-info">
+            <span class="work-tag">Web / Motion</span>
+            <h3>Parallax Labs</h3>
+            <p>Scroll-driven storytelling for a deep-tech startup</p>
+          </div>
+          <div class="work-card-num">02</div>
+        </div>
+
+        <div class="work-card" data-tilt>
+          <div class="work-card-img" style="background:linear-gradient(135deg,#00d4ff 0%,#080808 100%)">
+            <div class="work-card-3d-obj obj-3"></div>
+          </div>
+          <div class="work-card-info">
+            <span class="work-tag">3D / Interactive</span>
+            <h3>Zenith Protocol</h3>
+            <p>WebGL product configurator with real-time rendering</p>
+          </div>
+          <div class="work-card-num">03</div>
+        </div>
+
+        <div class="work-card" data-tilt>
+          <div class="work-card-img" style="background:linear-gradient(135deg,#c8ff00 0%,#ff3cac 100%)">
+            <div class="work-card-3d-obj obj-4"></div>
+          </div>
+          <div class="work-card-info">
+            <span class="work-tag">UI / UX</span>
+            <h3>Arc Dashboard</h3>
+            <p>Data visualisation platform for financial analytics</p>
+          </div>
+          <div class="work-card-num">04</div>
+        </div>
+
+        <div class="work-card" data-tilt>
+          <div class="work-card-img" style="background:linear-gradient(135deg,#ff3cac 0%,#00d4ff 100%)">
+            <div class="work-card-3d-obj obj-5"></div>
+          </div>
+          <div class="work-card-info">
+            <span class="work-tag">Web / Brand</span>
+            <h3>Orbit Studios</h3>
+            <p>Award-winning portfolio for a creative collective</p>
+          </div>
+          <div class="work-card-num">05</div>
+        </div>
+
       </div>
-      <h1 class="hero-title">
-        <span class="title-line" data-reveal>We build</span>
-        <span class="title-line title-line--accent" data-reveal>digital worlds</span>
-        <span class="title-line" data-reveal>that move.</span>
-      </h1>
-      <div class="hero-bottom">
-        <p class="hero-desc" data-reveal>
-          Award-winning creative studio crafting immersive websites,<br />
-          bold identities, and experiences people remember.
-        </p>
-        <a href="#work" class="hero-cta" data-magnetic data-reveal>
-          <span class="cta-text">Explore our work</span>
-          <span class="cta-icon">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
+    </div>
+    <div class="work-drag-hint" data-reveal><span>← Drag to explore →</span></div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-section" id="stats">
+    <div class="stats-grid">
+      <div class="stat-block" data-count="120" data-suffix="+"><div class="stat-val">0+</div><div class="stat-label">Projects delivered</div></div>
+      <div class="stat-block" data-count="98" data-suffix="%"><div class="stat-val">0%</div><div class="stat-label">Client satisfaction</div></div>
+      <div class="stat-block" data-count="7" data-suffix=""><div class="stat-val">0</div><div class="stat-label">Design awards</div></div>
+      <div class="stat-block" data-count="12" data-suffix=""><div class="stat-val">0</div><div class="stat-label">Countries reached</div></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="section-header" data-reveal>
+      <span class="section-tag">What we do</span>
+      <h2 data-split>Our capabilities</h2>
+    </div>
+    <div class="services-grid">
+
+      <div class="service-card" data-service>
+        <div class="service-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><polygon points="16,3 29,10 29,22 16,29 3,22 3,10" stroke="#c8ff00" stroke-width="1.5"/><circle cx="16" cy="16" r="4" fill="#c8ff00" opacity=".3"/></svg>
+        </div>
+        <h3>3D & WebGL</h3>
+        <p>Immersive Three.js experiences, product configurators, and interactive data visualisations.</p>
+        <div class="service-num">01</div>
+      </div>
+
+      <div class="service-card" data-service>
+        <div class="service-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="3" stroke="#ff3cac" stroke-width="1.5"/><path d="M10 16h12M16 10v12" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>UI / UX Design</h3>
+        <p>Research-backed interfaces that convert beautifully — from wireframe to pixel-perfect delivery.</p>
+        <div class="service-num">02</div>
+      </div>
+
+      <div class="service-card" data-service>
+        <div class="service-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#00d4ff" stroke-width="1.5"/><path d="M8 16c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Motion Design</h3>
+        <p>GSAP, Framer Motion, and Lottie animations that give your brand a living, breathing presence.</p>
+        <div class="service-num">03</div>
+      </div>
+
+      <div class="service-card" data-service>
+        <div class="service-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M6 26L16 6l10 20" stroke="#c8ff00" stroke-width="1.5" stroke-linecap="round"/><path d="M9 20h14" stroke="#c8ff00" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Brand Identity</h3>
+        <p>Logo systems, design tokens, and brand guidelines that scale from business card to billboard.</p>
+        <div class="service-num">04</div>
+      </div>
+
+      <div class="service-card" data-service>
+        <div class="service-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="3" y="6" width="26" height="18" rx="2" stroke="#ff3cac" stroke-width="1.5"/><path d="M11 24v2M21 24v2M8 26h16" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Web Development</h3>
+        <p>Next.js, React, and headless CMS builds optimised for performance, SEO, and developer experience.</p>
+        <div class="service-num">05</div>
+      </div>
+
+      <div class="service-card" data-service>
+        <div class="service-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M16 4l3 9h9l-7 5 3 9-8-6-8 6 3-9-7-5h9z" stroke="#00d4ff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Strategy</h3>
+        <p>Digital audits, competitor analysis, and growth roadmaps aligned to your business objectives.</p>
+        <div class="service-num">06</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-text">
+        <div class="section-tag" data-reveal>Who we are</div>
+        <h2 data-split>A studio obsessed<br>with the <em>edge</em>.</h2>
+        <p data-reveal>VOID Studio is a boutique digital agency founded on one belief: the web is the most powerful creative medium alive. We push browsers beyond their limits — blending WebGL, generative art, and precise interaction design to craft experiences people remember.</p>
+        <p data-reveal>Based everywhere. Working with brands that want to stand out, not blend in.</p>
+        <a href="#contact" class="btn-primary" data-magnetic data-reveal>
+          <span>Work with us</span>
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
         </a>
       </div>
-    </div>
-    <div class="hero-scroll-indicator">
-      <div class="scroll-wheel">
-        <div class="scroll-thumb"></div>
-      </div>
-    </div>
-    <div class="hero-counter">
-      <span class="counter-num" id="heroCounter">00</span>
-      <span class="counter-label">/ Projects delivered</span>
-    </div>
-  </section>
-
-  <!-- Marquee -->
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker-track" id="tickerTrack">
-      <div class="ticker-item">Creative Direction <span>✦</span></div>
-      <div class="ticker-item">Web Design <span>✦</span></div>
-      <div class="ticker-item">Motion & Animation <span>✦</span></div>
-      <div class="ticker-item">Brand Identity <span>✦</span></div>
-      <div class="ticker-item">3D & Immersive <span>✦</span></div>
-      <div class="ticker-item">Development <span>✦</span></div>
-      <div class="ticker-item">Creative Direction <span>✦</span></div>
-      <div class="ticker-item">Web Design <span>✦</span></div>
-      <div class="ticker-item">Motion & Animation <span>✦</span></div>
-      <div class="ticker-item">Brand Identity <span>✦</span></div>
-      <div class="ticker-item">3D & Immersive <span>✦</span></div>
-      <div class="ticker-item">Development <span>✦</span></div>
-    </div>
-  </div>
-
-  <!-- Work -->
-  <section class="section work-section" id="work">
-    <div class="section-intro container">
-      <div class="section-num">01</div>
-      <h2 class="section-heading" data-split>Selected Work</h2>
-    </div>
-    <div class="projects">
-
-      <div class="project-row" data-project>
-        <div class="project-meta">
-          <span class="project-index">001</span>
-          <div class="project-info">
-            <h3 class="project-title">Apex Finance</h3>
-            <p class="project-cats">Brand · Web · Motion</p>
-          </div>
-          <span class="project-year">2025</span>
-        </div>
-        <div class="project-visual">
-          <div class="project-img-wrap">
-            <div class="project-img pi-1">
-              <div class="pi-inner">
-                <div class="pi-shape s1"></div>
-                <div class="pi-shape s2"></div>
-                <div class="pi-shape s3"></div>
-                <div class="pi-text">APEX</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="project-row" data-project>
-        <div class="project-meta">
-          <span class="project-index">002</span>
-          <div class="project-info">
-            <h3 class="project-title">Soleil Creative</h3>
-            <p class="project-cats">Identity · E-Commerce</p>
-          </div>
-          <span class="project-year">2024</span>
-        </div>
-        <div class="project-visual">
-          <div class="project-img-wrap">
-            <div class="project-img pi-2">
-              <div class="pi-inner">
-                <div class="pi-circle"></div>
-                <div class="pi-text">SOLEIL</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="project-row" data-project>
-        <div class="project-meta">
-          <span class="project-index">003</span>
-          <div class="project-info">
-            <h3 class="project-title">Kova Analytics</h3>
-            <p class="project-cats">Product Design · Dev</p>
-          </div>
-          <span class="project-year">2024</span>
-        </div>
-        <div class="project-visual">
-          <div class="project-img-wrap">
-            <div class="project-img pi-3">
-              <div class="pi-inner">
-                <div class="pi-bars">
-                  <div class="pi-bar" style="height:40%"></div>
-                  <div class="pi-bar" style="height:70%"></div>
-                  <div class="pi-bar" style="height:55%"></div>
-                  <div class="pi-bar" style="height:90%"></div>
-                  <div class="pi-bar" style="height:65%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="project-row" data-project>
-        <div class="project-meta">
-          <span class="project-index">004</span>
-          <div class="project-info">
-            <h3 class="project-title">Bloom Wellness</h3>
-            <p class="project-cats">Brand · UX · Web</p>
-          </div>
-          <span class="project-year">2024</span>
-        </div>
-        <div class="project-visual">
-          <div class="project-img-wrap">
-            <div class="project-img pi-4">
-              <div class="pi-inner">
-                <div class="pi-petal p1"></div>
-                <div class="pi-petal p2"></div>
-                <div class="pi-petal p3"></div>
-                <div class="pi-dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Services -->
-  <section class="section services-section" id="services">
-    <div class="container">
-      <div class="section-intro">
-        <div class="section-num">02</div>
-        <h2 class="section-heading" data-split>What we do</h2>
-      </div>
-      <div class="services-grid">
-        <div class="service-card" data-service>
-          <div class="service-card-num">01</div>
-          <h3 class="service-card-title">Brand Identity</h3>
-          <p class="service-card-desc">Logos, visual systems, and brand guidelines that carve your unique space in the market.</p>
-          <div class="service-card-hover-bg"></div>
-        </div>
-        <div class="service-card" data-service>
-          <div class="service-card-num">02</div>
-          <h3 class="service-card-title">Web Design</h3>
-          <p class="service-card-desc">Pixel-perfect, performance-first websites that turn visitors into believers.</p>
-          <div class="service-card-hover-bg"></div>
-        </div>
-        <div class="service-card" data-service>
-          <div class="service-card-num">03</div>
-          <h3 class="service-card-title">Motion & Animation</h3>
-          <p class="service-card-desc">Scroll triggers, micro-interactions, and cinematic sequences that make your site feel alive.</p>
-          <div class="service-card-hover-bg"></div>
-        </div>
-        <div class="service-card" data-service>
-          <div class="service-card-num">04</div>
-          <h3 class="service-card-title">Development</h3>
-          <p class="service-card-desc">Clean, scalable code built for speed. React, Next.js, WebGL — we ship what we design.</p>
-          <div class="service-card-hover-bg"></div>
-        </div>
-        <div class="service-card" data-service>
-          <div class="service-card-num">05</div>
-          <h3 class="service-card-title">3D & Immersive</h3>
-          <p class="service-card-desc">Three.js, WebGL, and Spline-powered experiences that push the browser to its limits.</p>
-          <div class="service-card-hover-bg"></div>
-        </div>
-        <div class="service-card" data-service>
-          <div class="service-card-num">06</div>
-          <h3 class="service-card-title">E-Commerce</h3>
-          <p class="service-card-desc">Conversion-optimised storefronts on Shopify and headless stacks that look as good as they sell.</p>
-          <div class="service-card-hover-bg"></div>
-        </div>
+      <div class="about-visual">
+        <canvas id="aboutCanvas"></canvas>
       </div>
     </div>
   </section>
 
-  <!-- Stats -->
-  <section class="stats-section">
-    <div class="container">
-      <div class="stats-row">
-        <div class="stat-block" data-count="120" data-suffix="+">
-          <span class="stat-val" id="stat0">0</span>
-          <span class="stat-label">Projects delivered</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-block" data-count="98" data-suffix="%">
-          <span class="stat-val" id="stat1">0</span>
-          <span class="stat-label">Client satisfaction</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-block" data-count="8" data-suffix="yr">
-          <span class="stat-val" id="stat2">0</span>
-          <span class="stat-label">Years of craft</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-block" data-count="20" data-suffix="+">
-          <span class="stat-val" id="stat3">0</span>
-          <span class="stat-label">Countries served</span>
-        </div>
-      </div>
+  <!-- TESTIMONIAL -->
+  <section class="testimonial-section" data-reveal>
+    <div class="testimonial-inner">
+      <div class="quote-mark">"</div>
+      <blockquote>Working with VOID felt like hiring the future. They delivered a site that made our competitors rethink their entire digital strategy.</blockquote>
+      <cite>— Jordan Marsh, CEO of Parallax Labs</cite>
     </div>
   </section>
 
-  <!-- About -->
-  <section class="section about-section" id="about">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-left">
-          <div class="section-num">03</div>
-          <h2 class="section-heading" data-split>We obsess over<br/>digital craft.</h2>
-          <p class="about-text">Founded in 2017 as a two-person studio in Berlin, VOID has grown into a team of 12 designers, developers, and strategists united by one belief: the internet deserves better design.</p>
-          <p class="about-text">We work with ambitious startups and established brands across 20+ countries who want to stand apart — not just stand out.</p>
-          <div class="about-awards">
-            <div class="award-pill">Awwwards SOTD</div>
-            <div class="award-pill">FWA Winner</div>
-            <div class="award-pill">CSS Design Awards</div>
-            <div class="award-pill">Webby Finalist</div>
-          </div>
-        </div>
-        <div class="about-right">
-          <div class="about-visual">
-            <div class="av-ring r1"></div>
-            <div class="av-ring r2"></div>
-            <div class="av-ring r3"></div>
-            <div class="av-core">
-              <span class="av-core-text">VOID</span>
-            </div>
-            <div class="av-orbit orbit-1">
-              <div class="av-dot"></div>
-            </div>
-            <div class="av-orbit orbit-2">
-              <div class="av-dot"></div>
-            </div>
-          </div>
-        </div>
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="contact-text" data-reveal>
+        <span class="section-tag">Get in touch</span>
+        <h2 data-split>Ready to build<br>something <em>wild</em>?</h2>
+        <p>Tell us about your project and we'll get back within 24 hours.</p>
       </div>
-    </div>
-  </section>
-
-  <!-- Testimonial marquee -->
-  <div class="testimonial-strip">
-    <div class="testimonial-track" id="testimonialTrack">
-      <div class="t-item">"The best agency we've ever worked with — period."</div>
-      <div class="t-sep">✦</div>
-      <div class="t-item">"Our conversion rate jumped 40% after the redesign."</div>
-      <div class="t-sep">✦</div>
-      <div class="t-item">"Truly world-class. Every pixel is intentional."</div>
-      <div class="t-sep">✦</div>
-      <div class="t-item">"VOID made our brand feel alive for the first time."</div>
-      <div class="t-sep">✦</div>
-      <div class="t-item">"The best agency we've ever worked with — period."</div>
-      <div class="t-sep">✦</div>
-      <div class="t-item">"Our conversion rate jumped 40% after the redesign."</div>
-      <div class="t-sep">✦</div>
-      <div class="t-item">"Truly world-class. Every pixel is intentional."</div>
-      <div class="t-sep">✦</div>
-      <div class="t-item">"VOID made our brand feel alive for the first time."</div>
-      <div class="t-sep">✦</div>
-    </div>
-  </div>
-
-  <!-- Contact -->
-  <section class="section contact-section" id="contact">
-    <div class="container">
-      <div class="contact-grid">
-        <div class="contact-left">
-          <div class="section-num">04</div>
-          <h2 class="section-heading contact-heading" data-split>Start a<br/>project.</h2>
-          <p class="contact-sub">Have an idea? A deadline? A budget? Tell us everything — we respond within 24 hours.</p>
-          <div class="contact-details">
-            <a href="mailto:hello@voidstudio.io" class="contact-email" data-magnetic>hello@voidstudio.io</a>
-            <div class="contact-socials">
-              <a href="#" class="social-link" data-magnetic>TW</a>
-              <a href="#" class="social-link" data-magnetic>LI</a>
-              <a href="#" class="social-link" data-magnetic>DR</a>
-              <a href="#" class="social-link" data-magnetic>IG</a>
-            </div>
-          </div>
+      <form class="contact-form" id="contactForm">
+        <div class="field-wrap">
+          <input type="text" id="fname" class="field" placeholder=" " required />
+          <label for="fname">Your name</label>
         </div>
-        <div class="contact-right">
-          <form class="contact-form" id="contactForm">
-            <div class="field-group">
-              <input class="field" type="text" id="fname" placeholder=" " required />
-              <label class="field-label" for="fname">Your name</label>
-              <div class="field-line"></div>
-            </div>
-            <div class="field-group">
-              <input class="field" type="email" id="femail" placeholder=" " required />
-              <label class="field-label" for="femail">Email address</label>
-              <div class="field-line"></div>
-            </div>
-            <div class="field-group">
-              <textarea class="field field-ta" id="fmsg" placeholder=" " rows="4"></textarea>
-              <label class="field-label" for="fmsg">Tell us about your project</label>
-              <div class="field-line"></div>
-            </div>
-            <button type="submit" class="submit-btn" data-magnetic>
-              <span class="submit-text">Send message</span>
-              <span class="submit-arrow">↗</span>
-              <div class="submit-ripple"></div>
-            </button>
-            <div class="form-success" id="formSuccess">
-              <span class="success-icon">✓</span>
-              Message sent. We'll be in touch!
-            </div>
-          </form>
+        <div class="field-wrap">
+          <input type="email" id="femail" class="field" placeholder=" " required />
+          <label for="femail">Email address</label>
         </div>
-      </div>
+        <div class="field-wrap">
+          <input type="text" id="fcompany" class="field" placeholder=" " />
+          <label for="fcompany">Company (optional)</label>
+        </div>
+        <div class="field-wrap full">
+          <textarea id="fmsg" class="field" rows="4" placeholder=" " required></textarea>
+          <label for="fmsg">Tell us about your project</label>
+        </div>
+        <button type="submit" class="btn-primary submit-btn" data-magnetic>
+          <span class="submit-text">Send message</span>
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+          <div class="submit-ripple"></div>
+        </button>
+        <div id="formSuccess" class="form-success">✦ Message received — we'll be in touch soon.</div>
+      </form>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <span class="logo-text">VOID</span>
-          <span class="footer-tagline">Digital Experience Studio</span>
-        </div>
-        <div class="footer-links">
-          <a href="#work">Work</a>
-          <a href="#services">Services</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <div class="footer-copy">© 2025 VOID Studio</div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">VOID<span>.</span></div>
+      <div class="footer-links">
+        <a href="#">Twitter</a><a href="#">Dribbble</a><a href="#">LinkedIn</a><a href="#">GitHub</a>
       </div>
+      <div class="footer-copy">© 2026 VOID Studio. All rights reserved.</div>
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
