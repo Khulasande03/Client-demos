@@ -34,22 +34,36 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a href="#contact" class="nav-cta" data-magnetic>Let's talk</a>
-    <button class="burger" id="burger" aria-label="menu">
-      <span></span><span></span>
-    </button>
+    <button class="burger" id="burger" aria-label="menu"><span></span><span></span></button>
   </nav>
 
-  <!-- Mobile nav -->
   <div id="mobileNav">
-    <a href="#work">Work</a>
-    <a href="#services">Services</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
+    <a href="#work">Work</a><a href="#services">Services</a>
+    <a href="#about">About</a><a href="#contact">Contact</a>
   </div>
 
-  <!-- HERO -->
+  <!-- ═══ HERO ═══ -->
   <section id="hero">
     <canvas id="heroCanvas"></canvas>
+
+    <!-- CSS 3D scene -->
+    <div class="scene-wrap" id="scene3d" aria-hidden="true">
+      <div class="scene">
+        <div class="cube">
+          <div class="face front"></div><div class="face back"></div>
+          <div class="face left"></div><div class="face right"></div>
+          <div class="face top"></div><div class="face bottom"></div>
+        </div>
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <div class="dot-orbit">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
     <div class="hero-content" id="heroContent">
       <div class="hero-label" data-reveal>Digital Experience Studio</div>
       <h1 class="hero-title">
@@ -68,10 +82,7 @@
         </a>
         <a href="#contact" class="btn-ghost">Start a project</a>
       </div>
-      <div class="hero-scroll-hint">
-        <div class="scroll-line"></div>
-        <span>Scroll</span>
-      </div>
+      <div class="hero-scroll-hint"><div class="scroll-line"></div><span>Scroll</span></div>
     </div>
     <div class="hero-counter-wrap">
       <span id="heroCounter">00</span>
@@ -79,7 +90,7 @@
     </div>
   </section>
 
-  <!-- MARQUEE -->
+  <!-- ═══ MARQUEE ═══ -->
   <div class="marquee-wrap">
     <div class="marquee-track" id="tickerTrack">
       <span>Brand Identity</span><span class="dot">✦</span>
@@ -97,7 +108,7 @@
     </div>
   </div>
 
-  <!-- WORK -->
+  <!-- ═══ WORK ═══ -->
   <section id="work">
     <div class="section-header" data-reveal>
       <span class="section-tag">Selected Work</span>
@@ -107,8 +118,8 @@
       <div class="work-track" id="workInner">
 
         <div class="work-card" data-tilt>
-          <div class="work-card-img" style="background:linear-gradient(135deg,#c8ff00 0%,#080808 100%)">
-            <div class="work-card-3d-obj obj-1"></div>
+          <div class="work-card-img gi1">
+            <div class="card-shape cs1"></div>
           </div>
           <div class="work-card-info">
             <span class="work-tag">Brand / Web</span>
@@ -119,8 +130,8 @@
         </div>
 
         <div class="work-card" data-tilt>
-          <div class="work-card-img" style="background:linear-gradient(135deg,#ff3cac 0%,#080808 100%)">
-            <div class="work-card-3d-obj obj-2"></div>
+          <div class="work-card-img gi2">
+            <div class="card-shape cs2"></div>
           </div>
           <div class="work-card-info">
             <span class="work-tag">Web / Motion</span>
@@ -131,8 +142,8 @@
         </div>
 
         <div class="work-card" data-tilt>
-          <div class="work-card-img" style="background:linear-gradient(135deg,#00d4ff 0%,#080808 100%)">
-            <div class="work-card-3d-obj obj-3"></div>
+          <div class="work-card-img gi3">
+            <div class="card-shape cs3"></div>
           </div>
           <div class="work-card-info">
             <span class="work-tag">3D / Interactive</span>
@@ -143,8 +154,8 @@
         </div>
 
         <div class="work-card" data-tilt>
-          <div class="work-card-img" style="background:linear-gradient(135deg,#c8ff00 0%,#ff3cac 100%)">
-            <div class="work-card-3d-obj obj-4"></div>
+          <div class="work-card-img gi4">
+            <div class="card-shape cs4"></div>
           </div>
           <div class="work-card-info">
             <span class="work-tag">UI / UX</span>
@@ -155,8 +166,8 @@
         </div>
 
         <div class="work-card" data-tilt>
-          <div class="work-card-img" style="background:linear-gradient(135deg,#ff3cac 0%,#00d4ff 100%)">
-            <div class="work-card-3d-obj obj-5"></div>
+          <div class="work-card-img gi5">
+            <div class="card-shape cs5"></div>
           </div>
           <div class="work-card-info">
             <span class="work-tag">Web / Brand</span>
@@ -171,7 +182,7 @@
     <div class="work-drag-hint" data-reveal><span>← Drag to explore →</span></div>
   </section>
 
-  <!-- STATS -->
+  <!-- ═══ STATS ═══ -->
   <section class="stats-section" id="stats">
     <div class="stats-grid">
       <div class="stat-block" data-count="120" data-suffix="+"><div class="stat-val">0+</div><div class="stat-label">Projects delivered</div></div>
@@ -181,77 +192,58 @@
     </div>
   </section>
 
-  <!-- SERVICES -->
+  <!-- ═══ SERVICES ═══ -->
   <section id="services">
     <div class="section-header" data-reveal>
       <span class="section-tag">What we do</span>
       <h2 data-split>Our capabilities</h2>
     </div>
     <div class="services-grid">
-
       <div class="service-card" data-service>
-        <div class="service-icon">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><polygon points="16,3 29,10 29,22 16,29 3,22 3,10" stroke="#c8ff00" stroke-width="1.5"/><circle cx="16" cy="16" r="4" fill="#c8ff00" opacity=".3"/></svg>
-        </div>
+        <div class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><polygon points="16,3 29,10 29,22 16,29 3,22 3,10" stroke="#c8ff00" stroke-width="1.5"/><circle cx="16" cy="16" r="4" fill="#c8ff00" opacity=".3"/></svg></div>
         <h3>3D & WebGL</h3>
         <p>Immersive Three.js experiences, product configurators, and interactive data visualisations.</p>
         <div class="service-num">01</div>
       </div>
-
       <div class="service-card" data-service>
-        <div class="service-icon">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="3" stroke="#ff3cac" stroke-width="1.5"/><path d="M10 16h12M16 10v12" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
+        <div class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="3" stroke="#ff3cac" stroke-width="1.5"/><path d="M10 16h12M16 10v12" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <h3>UI / UX Design</h3>
         <p>Research-backed interfaces that convert beautifully — from wireframe to pixel-perfect delivery.</p>
         <div class="service-num">02</div>
       </div>
-
       <div class="service-card" data-service>
-        <div class="service-icon">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#00d4ff" stroke-width="1.5"/><path d="M8 16c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
+        <div class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#00d4ff" stroke-width="1.5"/><path d="M8 16c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <h3>Motion Design</h3>
         <p>GSAP, Framer Motion, and Lottie animations that give your brand a living, breathing presence.</p>
         <div class="service-num">03</div>
       </div>
-
       <div class="service-card" data-service>
-        <div class="service-icon">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M6 26L16 6l10 20" stroke="#c8ff00" stroke-width="1.5" stroke-linecap="round"/><path d="M9 20h14" stroke="#c8ff00" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
+        <div class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M6 26L16 6l10 20" stroke="#c8ff00" stroke-width="1.5" stroke-linecap="round"/><path d="M9 20h14" stroke="#c8ff00" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <h3>Brand Identity</h3>
         <p>Logo systems, design tokens, and brand guidelines that scale from business card to billboard.</p>
         <div class="service-num">04</div>
       </div>
-
       <div class="service-card" data-service>
-        <div class="service-icon">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="3" y="6" width="26" height="18" rx="2" stroke="#ff3cac" stroke-width="1.5"/><path d="M11 24v2M21 24v2M8 26h16" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
+        <div class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="3" y="6" width="26" height="18" rx="2" stroke="#ff3cac" stroke-width="1.5"/><path d="M11 24v2M21 24v2M8 26h16" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <h3>Web Development</h3>
         <p>Next.js, React, and headless CMS builds optimised for performance, SEO, and developer experience.</p>
         <div class="service-num">05</div>
       </div>
-
       <div class="service-card" data-service>
-        <div class="service-icon">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M16 4l3 9h9l-7 5 3 9-8-6-8 6 3-9-7-5h9z" stroke="#00d4ff" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        </div>
+        <div class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M16 4l3 9h9l-7 5 3 9-8-6-8 6 3-9-7-5h9z" stroke="#00d4ff" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
         <h3>Strategy</h3>
         <p>Digital audits, competitor analysis, and growth roadmaps aligned to your business objectives.</p>
         <div class="service-num">06</div>
       </div>
-
     </div>
   </section>
 
-  <!-- ABOUT -->
+  <!-- ═══ ABOUT ═══ -->
   <section id="about">
     <div class="about-inner">
       <div class="about-text">
         <div class="section-tag" data-reveal>Who we are</div>
-        <h2 data-split>A studio obsessed<br>with the <em>edge</em>.</h2>
+        <h2 data-split>A studio obsessed<br>with the edge.</h2>
         <p data-reveal>VOID Studio is a boutique digital agency founded on one belief: the web is the most powerful creative medium alive. We push browsers beyond their limits — blending WebGL, generative art, and precise interaction design to craft experiences people remember.</p>
         <p data-reveal>Based everywhere. Working with brands that want to stand out, not blend in.</p>
         <a href="#contact" class="btn-primary" data-magnetic data-reveal>
@@ -260,12 +252,20 @@
         </a>
       </div>
       <div class="about-visual">
-        <canvas id="aboutCanvas"></canvas>
+        <div class="about-3d-scene">
+          <div class="about-ring ar1"></div>
+          <div class="about-ring ar2"></div>
+          <div class="about-ring ar3"></div>
+          <div class="about-core"></div>
+          <div class="about-dots">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- TESTIMONIAL -->
+  <!-- ═══ TESTIMONIAL ═══ -->
   <section class="testimonial-section" data-reveal>
     <div class="testimonial-inner">
       <div class="quote-mark">"</div>
@@ -274,31 +274,19 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
+  <!-- ═══ CONTACT ═══ -->
   <section id="contact">
     <div class="contact-inner">
       <div class="contact-text" data-reveal>
         <span class="section-tag">Get in touch</span>
-        <h2 data-split>Ready to build<br>something <em>wild</em>?</h2>
+        <h2 data-split>Ready to build<br>something wild?</h2>
         <p>Tell us about your project and we'll get back within 24 hours.</p>
       </div>
       <form class="contact-form" id="contactForm">
-        <div class="field-wrap">
-          <input type="text" id="fname" class="field" placeholder=" " required />
-          <label for="fname">Your name</label>
-        </div>
-        <div class="field-wrap">
-          <input type="email" id="femail" class="field" placeholder=" " required />
-          <label for="femail">Email address</label>
-        </div>
-        <div class="field-wrap">
-          <input type="text" id="fcompany" class="field" placeholder=" " />
-          <label for="fcompany">Company (optional)</label>
-        </div>
-        <div class="field-wrap full">
-          <textarea id="fmsg" class="field" rows="4" placeholder=" " required></textarea>
-          <label for="fmsg">Tell us about your project</label>
-        </div>
+        <div class="field-wrap"><input type="text" id="fname" class="field" placeholder=" " required /><label for="fname">Your name</label></div>
+        <div class="field-wrap"><input type="email" id="femail" class="field" placeholder=" " required /><label for="femail">Email address</label></div>
+        <div class="field-wrap"><input type="text" id="fcompany" class="field" placeholder=" " /><label for="fcompany">Company (optional)</label></div>
+        <div class="field-wrap full"><textarea id="fmsg" class="field" rows="4" placeholder=" " required></textarea><label for="fmsg">Tell us about your project</label></div>
         <button type="submit" class="btn-primary submit-btn" data-magnetic>
           <span class="submit-text">Send message</span>
           <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
@@ -313,16 +301,11 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-logo">VOID<span>.</span></div>
-      <div class="footer-links">
-        <a href="#">Twitter</a><a href="#">Dribbble</a><a href="#">LinkedIn</a><a href="#">GitHub</a>
-      </div>
+      <div class="footer-links"><a href="#">Twitter</a><a href="#">Dribbble</a><a href="#">LinkedIn</a><a href="#">GitHub</a></div>
       <div class="footer-copy">© 2026 VOID Studio. All rights reserved.</div>
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
