@@ -17,7 +17,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow-x:hidden;cursor:none}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow-x:hidden}
 body.loading{overflow:hidden}
 a{color:inherit;text-decoration:none}
 ::-webkit-scrollbar{width:2px}
@@ -40,12 +40,7 @@ body::before{
 .pre-pct{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;color:var(--muted);text-align:center}
 
 /* ── Cursor ── */
-#cur,#curF{position:fixed;border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition-property:width,height,background,border-color}
-#cur{width:7px;height:7px;background:var(--accent);transition-duration:.2s}
-#curF{width:30px;height:30px;border:1px solid rgba(200,255,0,.35);transition-duration:.1s,1s,.3s,.3s}
-body.ch #cur{width:16px;height:16px;background:transparent;border:1px solid var(--accent)}
-body.ch #curF{width:0;height:0}
-@media(hover:none){#cur,#curF{display:none}}
+a,button,.svc,.wc{cursor:pointer}
 
 /* ── Nav ── */
 #nav{position:fixed;inset:0 0 auto;z-index:500;display:flex;align-items:center;padding:1.75rem 4vw;transition:padding .4s var(--ease),backdrop-filter .4s,background .4s}
@@ -250,10 +245,6 @@ footer{padding:2.5rem 4vw;border-top:1px solid rgba(255,255,255,.06)}
     <div class="pre-pct"><span id="prePct">00</span></div>
   </div>
 </div>
-
-<!-- Cursor -->
-<div id="cur"></div>
-<div id="curF"></div>
 
 <!-- Nav -->
 <nav id="nav">
@@ -755,25 +746,6 @@ footer{padding:2.5rem 4vw;border-top:1px solid rgba(255,255,255,.06)}
   draw();
 })();
 
-/* ══════════════════════════════════════════════════
-   CURSOR
-══════════════════════════════════════════════════ */
-const cur = document.getElementById('cur');
-const curF = document.getElementById('curF');
-let mx = -100, my = -100, fx = -100, fy = -100;
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
-});
-(function animF(){
-  fx += (mx-fx)*0.12; fy += (my-fy)*0.12;
-  curF.style.left = fx+'px'; curF.style.top = fy+'px';
-  requestAnimationFrame(animF);
-})();
-document.querySelectorAll('a,button,.svc,.wc').forEach(el => {
-  el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
-  el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
-});
 
 /* ══════════════════════════════════════════════════
    NAV
