@@ -9,9 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#080808;--bg2:#0c0c0c;--surface:#111;
-  --accent:#c8ff00;--accent2:#ff3cac;--accent3:#00d4ff;
-  --fg:#fff;--muted:rgba(255,255,255,.4);
+  --bg:#060608;--surface:#0f0f12;--border:rgba(255,255,255,.07);
+  --lime:#c8ff00;--mag:#ff3cac;--cyan:#00d4ff;--fg:#fff;--muted:rgba(255,255,255,.45);
   --font:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;
   --ease:cubic-bezier(.16,1,.3,1);
 }
@@ -20,322 +19,446 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow-x:hidden}
 body.loading{overflow:hidden}
 a{color:inherit;text-decoration:none}
-::-webkit-scrollbar{width:2px}
-::-webkit-scrollbar-thumb{background:var(--accent)}
+a,button{cursor:pointer}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--lime)}
 
-/* ── Grain overlay ── */
-body::before{
-  content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity:.025;
-}
+/* ─── SVG Filters ─── */
+.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
 
-/* ── Preloader ── */
-#preloader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .8s var(--ease),visibility .8s}
-#preloader.done{opacity:0;visibility:hidden;pointer-events:none}
-.pre-logo{font-size:clamp(4rem,10vw,8rem);font-weight:700;letter-spacing:-.05em;line-height:1}
-.pre-logo em{color:var(--accent);font-style:normal}
-.pre-line{width:1px;height:0;background:var(--accent);margin:2rem auto;transition:height 1s var(--ease)}
-.pre-line.grow{height:80px}
-.pre-pct{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;color:var(--muted);text-align:center}
+/* ─── Preloader ─── */
+#pre{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2rem;transition:opacity .9s var(--ease),visibility .9s}
+#pre.out{opacity:0;visibility:hidden;pointer-events:none}
+.pre-logo{font-size:clamp(4rem,12vw,9rem);font-weight:700;letter-spacing:-.05em;line-height:1}
+.pre-logo b{color:var(--lime)}
+.pre-track{width:180px;height:1px;background:rgba(255,255,255,.1);overflow:hidden}
+.pre-fill{height:100%;width:0;background:linear-gradient(90deg,var(--lime),var(--cyan));transition:width .04s linear}
+.pre-pct{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;color:var(--muted)}
 
-/* ── Cursor ── */
-a,button,.svc,.wc{cursor:pointer}
+/* ─── Nav ─── */
+#nav{position:fixed;inset:0 0 auto;z-index:500;display:flex;align-items:center;padding:1.5rem 4vw;transition:padding .4s var(--ease),background .4s,backdrop-filter .4s}
+#nav.s{padding:.9rem 4vw;background:rgba(6,6,8,.75);backdrop-filter:blur(28px);border-bottom:1px solid var(--border)}
+.nlogo{font-size:1.15rem;font-weight:700;letter-spacing:-.04em;margin-right:auto}
+.nlogo b{color:var(--lime)}
+.nlinks{display:flex;gap:2rem;list-style:none}
+.nlinks a{font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);transition:color .2s;padding:.4rem .6rem;border-radius:6px}
+.nlinks a:hover{color:var(--fg);background:rgba(255,255,255,.05)}
 
-/* ── Nav ── */
-#nav{position:fixed;inset:0 0 auto;z-index:500;display:flex;align-items:center;padding:1.75rem 4vw;transition:padding .4s var(--ease),backdrop-filter .4s,background .4s}
-#nav.s{padding:1rem 4vw;background:rgba(8,8,8,.8);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.06)}
-.nlogo{font-size:1.2rem;font-weight:700;letter-spacing:-.04em;margin-right:auto}
-.nlogo em{color:var(--accent);font-style:normal}
-.nlinks{display:flex;gap:2.5rem;list-style:none}
-.nlinks a{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);transition:color .2s}
-.nlinks a:hover{color:var(--fg)}
-.ncta{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.55rem 1.5rem;border:1px solid var(--accent);color:var(--accent);border-radius:100px;margin-left:2rem;transition:background .2s,color .2s}
-.ncta:hover{background:var(--accent);color:var(--bg)}
-.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:none;padding:4px;margin-left:1rem}
-.burger span{display:block;width:20px;height:1.5px;background:var(--fg);transition:transform .3s var(--ease),opacity .3s}
-#mnav{position:fixed;inset:0;z-index:490;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;transform:translateY(-100%);transition:transform .6s var(--ease)}
-#mnav.open{transform:translateY(0)}
-#mnav a{font-size:clamp(2.5rem,10vw,5rem);font-weight:700;letter-spacing:-.04em}
-#mnav a span{color:var(--accent)}
-@media(max-width:768px){.nlinks,.ncta{display:none}.burger{display:flex}}
+/* gooey nav CTA */
+#gooey-nav{position:relative;display:flex;align-items:center;margin-left:2rem;filter:url(#gooey)}
+#gooey-nav .g-arrow{position:absolute;right:0;width:32px;height:32px;border-radius:100px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;transition:transform .35s var(--ease);z-index:0;transform:translateX(-2.8rem)}
+#gooey-nav:hover .g-arrow{transform:translateX(-4.8rem)}
+#gooey-nav .g-main{position:relative;z-index:1;padding:.5rem 1.4rem;background:#fff;color:#000;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:100px;border:none;white-space:nowrap}
+#gooey-nav .g-main:hover{background:rgba(255,255,255,.92)}
 
-/* ── Hero ── */
-#hero{position:relative;height:100vh;min-height:600px;display:flex;flex-direction:column;justify-content:flex-end;padding:0 4vw 5vw;overflow:hidden}
-#heroCanvas{position:absolute;inset:0;width:100%;height:100%}
-.hero-eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;position:relative;z-index:2}
-.hero-h1{position:relative;z-index:2;font-size:clamp(4rem,9.5vw,13rem);font-weight:700;line-height:.9;letter-spacing:-.05em;margin-bottom:2.5rem}
-.hero-h1 .hl{display:block;overflow:hidden}
-.hero-h1 .hl span{display:block;transform:translateY(110%);transition:transform .9s var(--ease)}
-.hero-h1 .hl.v span{transform:translateY(0)}
-.hero-h1 em{font-style:normal;color:var(--accent);-webkit-text-fill-color:transparent;-webkit-text-stroke:1px var(--accent)}
-.hero-row{position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:2rem}
-.hero-sub{font-size:clamp(.9rem,1.3vw,1.1rem);color:var(--muted);max-width:380px;line-height:1.7;opacity:0;transform:translateY(20px);transition:opacity .8s .6s var(--ease),transform .8s .6s var(--ease)}
-.hero-sub.v{opacity:1;transform:translateY(0)}
-.hero-btns{display:flex;gap:1rem;opacity:0;transform:translateY(20px);transition:opacity .8s .75s var(--ease),transform .8s .75s var(--ease)}
-.hero-btns.v{opacity:1;transform:translateY(0)}
-.hero-scroll{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;color:var(--muted);display:flex;align-items:center;gap:.75rem;opacity:0;transition:opacity .8s 1.1s var(--ease)}
-.hero-scroll.v{opacity:1}
-.scroll-bar{width:40px;height:1px;background:rgba(255,255,255,.15);position:relative;overflow:hidden}
-.scroll-bar::after{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-100%);animation:scrollBar 1.6s ease-in-out infinite}
-@keyframes scrollBar{0%{transform:translateX(-100%)}50%{transform:translateX(0)}100%{transform:translateX(100%)}}
-.btn-p{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2rem;background:var(--accent);color:var(--bg);font-weight:700;font-size:.875rem;border-radius:100px;transition:transform .3s var(--ease),box-shadow .3s;position:relative;overflow:hidden;letter-spacing:-.01em}
-.btn-p::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-100%);transition:transform .5s var(--ease)}
-.btn-p:hover::before{transform:translateX(0)}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(200,255,0,.2)}
-.btn-g{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2rem;border:1px solid rgba(255,255,255,.15);color:var(--muted);font-weight:600;font-size:.875rem;border-radius:100px;transition:border-color .2s,color .2s}
-.btn-g:hover{border-color:rgba(255,255,255,.5);color:var(--fg)}
-.hero-badge{position:absolute;top:50%;right:5vw;transform:translateY(-50%);width:120px;height:120px;z-index:2;display:flex;align-items:center;justify-content:center}
-.badge-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(200,255,0,.2);animation:badgeSpin 12s linear infinite}
-.badge-ring::before{content:'';position:absolute;inset:-1px;border-radius:50%;background:conic-gradient(var(--accent) 0deg, transparent 60deg, transparent 300deg, var(--accent) 360deg);-webkit-mask:radial-gradient(circle,transparent 46px,black 47px);mask:radial-gradient(circle,transparent 46px,black 47px)}
-.badge-text{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-align:center;line-height:1.8}
-.badge-num{font-size:1.8rem;font-weight:700;color:var(--fg);display:block;letter-spacing:-.04em;line-height:1}
-@keyframes badgeSpin{to{transform:rotate(360deg)}}
-@media(max-width:768px){.hero-badge{display:none}}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;margin-left:1rem}
+.burger span{display:block;width:20px;height:1.5px;background:#fff;transition:transform .3s var(--ease)}
+#mnav{position:fixed;inset:0;z-index:490;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;transform:translateX(100%);transition:transform .55s var(--ease)}
+#mnav.open{transform:translateX(0)}
+#mnav a{font-size:clamp(2.5rem,9vw,5rem);font-weight:700;letter-spacing:-.04em}
+#mnav a b{color:var(--lime)}
+@media(max-width:768px){.nlinks,#gooey-nav{display:none}.burger{display:flex}}
 
-/* ── Marquee ── */
-.marquee{overflow:hidden;padding:1.25rem 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
-.mtrack{display:flex;gap:3rem;width:max-content;font-family:var(--mono);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);animation:mq 35s linear infinite}
-.mtrack:hover{animation-play-state:paused}
-.mtrack .dot{color:var(--accent);font-size:.5rem}
+/* ─── HERO ─── */
+#hero{position:relative;height:100vh;min-height:640px;display:flex;flex-direction:column;justify-content:flex-end;padding:0 5vw 5vw;overflow:hidden}
+
+/* Mesh gradient blobs */
+.blobs{position:absolute;inset:0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:0;will-change:transform}
+.blob.a{opacity:.55}
+.b1{width:65%;height:65%;background:radial-gradient(circle,rgba(200,255,0,.55) 0%,transparent 70%);top:-10%;left:-15%;animation:bm1 10s ease-in-out infinite}
+.b2{width:55%;height:55%;background:radial-gradient(circle,rgba(255,60,172,.45) 0%,transparent 70%);top:5%;right:-10%;animation:bm2 13s ease-in-out infinite}
+.b3{width:50%;height:60%;background:radial-gradient(circle,rgba(0,212,255,.4) 0%,transparent 70%);bottom:-15%;left:20%;animation:bm3 11s ease-in-out infinite}
+.b4{width:35%;height:35%;background:radial-gradient(circle,rgba(200,255,0,.3) 0%,transparent 70%);bottom:10%;right:5%;animation:bm4 9s ease-in-out infinite}
+@keyframes bm1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(8%,6%) scale(1.08)}66%{transform:translate(-5%,10%) scale(.94)}}
+@keyframes bm2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-10%,8%) scale(1.06)}66%{transform:translate(5%,-5%) scale(1.12)}}
+@keyframes bm3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6%,-8%) scale(1.1)}}
+@keyframes bm4{0%,100%{transform:translate(0,0)}50%{transform:translate(-8%,-10%) scale(1.15)}}
+
+/* dark overlay so text reads well */
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,8,.95) 0%,rgba(6,6,8,.55) 40%,rgba(6,6,8,.15) 100%);z-index:1}
+
+/* wireframe canvas */
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:.55;mix-blend-mode:screen}
+
+/* glass badge */
+.h-badge{position:relative;z-index:3;display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1.2rem;border-radius:100px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(12px);font-family:var(--mono);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:1.5rem;filter:url(#glass);opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.h-badge::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(200,255,0,.35),transparent)}
+.h-badge b{color:var(--lime)}
+.h-badge.v{opacity:1;transform:translateY(0)}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+/* headline */
+.h-title{position:relative;z-index:3;font-size:clamp(3.5rem,9vw,11.5rem);font-weight:700;line-height:.9;letter-spacing:-.05em;margin-bottom:2.5rem}
+.h-title .hl{display:block;overflow:hidden}
+.h-title .hl span{display:block;transform:translateY(110%);transition:transform .85s var(--ease)}
+.h-title .hl.v span{transform:translateY(0)}
+.h-title .grad{background:linear-gradient(135deg,#fff 0%,var(--lime) 25%,var(--cyan) 60%,var(--mag) 85%,#fff 100%);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradShift 6s linear infinite;filter:url(#text-glow)}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+.h-row{position:relative;z-index:3;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:2rem}
+.h-sub{font-size:clamp(.9rem,1.4vw,1.1rem);color:var(--muted);max-width:400px;line-height:1.75;opacity:0;transform:translateY(16px);transition:opacity .7s .6s var(--ease),transform .7s .6s var(--ease)}
+.h-sub.v{opacity:1;transform:translateY(0)}
+
+/* gooey hero buttons */
+.h-btns{display:flex;gap:.75rem;align-items:center;opacity:0;transform:translateY(16px);transition:opacity .7s .75s var(--ease),transform .7s .75s var(--ease)}
+.h-btns.v{opacity:1;transform:translateY(0)}
+.btn-goo{position:relative;display:flex;align-items:center;filter:url(#gooey)}
+.btn-goo .g-pill{padding:.85rem 2rem;border-radius:100px;font-size:.875rem;font-weight:700;letter-spacing:-.01em;border:none;white-space:nowrap;position:relative;z-index:1}
+.btn-goo .g-arr{position:absolute;right:0;width:42px;height:42px;border-radius:100px;display:flex;align-items:center;justify-content:center;z-index:0;transform:translateX(-3rem);transition:transform .35s var(--ease)}
+.btn-goo:hover .g-arr{transform:translateX(-5.5rem)}
+.btn-primary-goo .g-pill{background:var(--lime);color:#060608}
+.btn-primary-goo .g-arr{background:var(--lime)}
+.btn-ghost-plain{padding:.85rem 2rem;border-radius:100px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:.875rem;font-weight:600;transition:background .2s,border-color .2s,color .2s}
+.btn-ghost-plain:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff}
+
+/* rotating text badge */
+.spin-badge{position:absolute;bottom:4rem;right:5vw;z-index:3;width:110px;height:110px;opacity:0;transition:opacity .8s 1.2s var(--ease)}
+.spin-badge.v{opacity:1}
+.spin-inner{width:100%;height:100%;position:relative}
+.spin-ring{position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(200,255,0,.25)}
+.spin-text{position:absolute;inset:0;animation:spin 18s linear infinite}
+.spin-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--mono);font-size:.42rem;letter-spacing:.05em;color:rgba(255,255,255,.5);text-align:center;line-height:1.5}
+.spin-center b{display:block;font-size:1.4rem;color:var(--lime);letter-spacing:-.04em;font-family:var(--font)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── Marquee ─── */
+.mq{overflow:hidden;padding:1.25rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}
+.mq-track{display:flex;gap:3rem;width:max-content;font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);animation:mq 32s linear infinite}
+.mq-track:hover{animation-play-state:paused}
+.mq-dot{color:var(--lime)}
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* ── Sections ── */
-section{padding:clamp(5rem,10vw,10rem) 4vw}
-.stag{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:block}
-.sh2{font-size:clamp(2.5rem,5vw,5.5rem);font-weight:700;letter-spacing:-.04em;line-height:1;overflow:hidden}
-.sh2 .char{display:inline-block;transform:translateY(110%);transition:transform .65s var(--ease)}
-.sh2.v .char{transform:translateY(0)}
+/* ─── Common section ─── */
+section{padding:clamp(5rem,10vw,9rem) 5vw}
+.stag{font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--lime);display:block;margin-bottom:1rem}
+.s-h2{font-size:clamp(2.5rem,5vw,5.5rem);font-weight:700;letter-spacing:-.04em;line-height:1;overflow:hidden}
+.s-h2 .char{display:inline-block;transform:translateY(110%);transition:transform .65s var(--ease)}
+.s-h2.v .char{transform:translateY(0)}
 
-/* ── Work ── */
-#work{padding-bottom:3rem}
-.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:4rem}
-@media(max-width:900px){.work-grid{grid-template-columns:1fr}}
-.wc{position:relative;border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid rgba(255,255,255,.06);opacity:0;transform:translateY(50px) scale(.97);transition:opacity .8s var(--ease),transform .8s var(--ease);will-change:transform}
-.wc.v{opacity:1;transform:translateY(0) scale(1)}
-.wc:nth-child(2){transition-delay:.12s}
-.wc:nth-child(3){transition-delay:.08s}
-.wc:nth-child(4){transition-delay:.2s}
+/* ─── Work ─── */
+#work .s-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:2rem;margin-bottom:3.5rem}
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+@media(max-width:860px){.work-grid{grid-template-columns:1fr}}
+.wc{border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid var(--border);opacity:0;transform:translateY(40px) scale(.97);transition:opacity .7s var(--ease),transform .7s var(--ease);position:relative}
+.wc.v{opacity:1;transform:none}
+.wc:nth-child(2){transition-delay:.1s}
+.wc:nth-child(3){transition-delay:.07s}
+.wc:nth-child(4){transition-delay:.17s}
 .wc:nth-child(5){grid-column:1/-1;transition-delay:.04s}
-.wc-img{height:300px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.wc:nth-child(5) .wc-img{height:240px}
-.wg1{background:linear-gradient(135deg,#050f00 0%,#1a3300 40%,#c8ff00 200%)}
-.wg2{background:linear-gradient(135deg,#0d0010 0%,#2a0040 40%,#ff3cac 200%)}
-.wg3{background:linear-gradient(135deg,#00050d 0%,#001a30 40%,#00d4ff 200%)}
-.wg4{background:linear-gradient(135deg,#0a0007 0%,#200015 40%,#ff3cac 180%)}
-.wg5{background:linear-gradient(90deg,#050f00,#001a20,#0d0010)}
-.wc-shape{transition:transform .6s var(--ease)}
-.wc:hover .wc-shape{transform:scale(1.1) rotate(15deg)}
-.ws1{width:80px;height:80px;border:1.5px solid rgba(200,255,0,.7);transform:rotate(45deg);border-radius:8px;box-shadow:0 0 60px rgba(200,255,0,.3),inset 0 0 30px rgba(200,255,0,.05)}
-.ws2{width:80px;height:80px;border-radius:50%;border:1.5px solid rgba(255,60,172,.8);box-shadow:0 0 60px rgba(255,60,172,.3)}
-.ws3{width:0;height:0;border-left:45px solid transparent;border-right:45px solid transparent;border-bottom:78px solid rgba(0,212,255,.3);filter:drop-shadow(0 0 20px rgba(0,212,255,.5))}
-.ws4{width:80px;height:80px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);background:rgba(255,60,172,.2);border:1.5px solid rgba(255,60,172,.7);box-shadow:0 0 40px rgba(255,60,172,.3)}
-.ws5{display:flex;gap:1.5rem}
-.ws5 span{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(200,255,0,.4);box-shadow:0 0 20px rgba(200,255,0,.2)}
-.ws5 span:nth-child(2){border-color:rgba(255,60,172,.4);box-shadow:0 0 20px rgba(255,60,172,.2)}
-.ws5 span:nth-child(3){border-color:rgba(0,212,255,.4);box-shadow:0 0 20px rgba(0,212,255,.2)}
-.wc-info{padding:1.75rem}
-.wc-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem}
-.wc-info h3{font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.4rem}
-.wc-info p{font-size:.875rem;color:var(--muted)}
-.wc-num{position:absolute;top:1.25rem;right:1.25rem;font-family:var(--mono);font-size:.6rem;color:rgba(255,255,255,.15);letter-spacing:.1em}
-.wc-arrow{position:absolute;bottom:1.5rem;right:1.5rem;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;transition:border-color .3s,background .3s,transform .3s var(--ease)}
-.wc:hover .wc-arrow{border-color:var(--accent);background:var(--accent);transform:rotate(45deg)}
-.wc-arrow svg path{transition:stroke .3s}
-.wc:hover .wc-arrow svg path{stroke:var(--bg)}
+.wc-img{height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.wc:nth-child(5) .wc-img{height:200px}
+/* individual card gradient backgrounds */
+.wg1{background:linear-gradient(135deg,#040a00,#0d2200,rgba(200,255,0,.35))}
+.wg2{background:linear-gradient(135deg,#0a0010,#1e0030,rgba(255,60,172,.4))}
+.wg3{background:linear-gradient(135deg,#00040c,#001520,rgba(0,212,255,.35))}
+.wg4{background:linear-gradient(135deg,#0a0006,#1c000f,rgba(255,60,172,.3))}
+.wg5{background:linear-gradient(100deg,#040a00,#001520,#0a0010)}
+/* card shape icons */
+.ws{transition:transform .5s var(--ease)}
+.wc:hover .ws{transform:scale(1.08) rotate(8deg)}
+.ws1{width:72px;height:72px;border:1.5px solid rgba(200,255,0,.75);transform:rotate(45deg);border-radius:8px;box-shadow:0 0 50px rgba(200,255,0,.3),inset 0 0 20px rgba(200,255,0,.08)}
+.ws2{width:72px;height:72px;border-radius:50%;border:1.5px solid rgba(255,60,172,.85);box-shadow:0 0 50px rgba(255,60,172,.3)}
+.ws3{width:0;height:0;border-left:40px solid transparent;border-right:40px solid transparent;border-bottom:68px solid rgba(0,212,255,.25);filter:drop-shadow(0 0 16px rgba(0,212,255,.5))}
+.ws4{width:72px;height:72px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);border:1.5px solid rgba(255,60,172,.7);box-shadow:0 0 40px rgba(255,60,172,.3)}
+.ws5{display:flex;gap:1.25rem;align-items:center}
+.ws5 span{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(200,255,0,.4);box-shadow:0 0 18px rgba(200,255,0,.2)}
+.ws5 span:nth-child(2){border-color:rgba(255,60,172,.4);box-shadow:0 0 18px rgba(255,60,172,.2)}
+.ws5 span:nth-child(3){border-color:rgba(0,212,255,.4);box-shadow:0 0 18px rgba(0,212,255,.2)}
+.wc-info{padding:1.5rem 1.75rem 2rem}
+.wc-tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--lime);display:block;margin-bottom:.4rem}
+.wc-info h3{font-size:1.3rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.35rem}
+.wc-info p{font-size:.85rem;color:var(--muted)}
+.wc-num{position:absolute;top:1rem;right:1.25rem;font-family:var(--mono);font-size:.58rem;color:rgba(255,255,255,.13);letter-spacing:.1em}
+/* arrow link */
+.wc-link{position:absolute;bottom:1.25rem;right:1.25rem;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;transition:border-color .3s,background .3s,transform .3s var(--ease)}
+.wc:hover .wc-link{background:var(--lime);border-color:var(--lime);transform:rotate(45deg)}
+.wc:hover .wc-link svg path{stroke:#060608}
 
-/* ── Stats ── */
-.stats{background:var(--bg2);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:5rem 4vw}
-.stats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);max-width:1100px;margin:0 auto}
-@media(max-width:700px){.stats-g{grid-template-columns:repeat(2,1fr)}}
-.stat{background:var(--bg2);padding:3rem 2rem;text-align:center}
-.stat-n{font-family:var(--mono);font-size:clamp(2.5rem,5vw,4rem);font-weight:700;color:var(--accent);line-height:1;margin-bottom:.5rem;letter-spacing:-.04em}
-.stat-l{font-size:.8rem;color:var(--muted);letter-spacing:.05em}
+/* ─── Stats ─── */
+.stats-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);padding:4.5rem 5vw}
+.stats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);max-width:1200px;margin:0 auto}
+@media(max-width:680px){.stats-g{grid-template-columns:1fr 1fr}}
+.stat{padding:2.5rem 2rem;background:var(--surface);text-align:center}
+.stat-n{font-family:var(--mono);font-size:clamp(2.2rem,4.5vw,3.5rem);font-weight:700;color:var(--lime);line-height:1;letter-spacing:-.04em;margin-bottom:.4rem}
+.stat-l{font-size:.78rem;color:var(--muted);letter-spacing:.05em}
 
-/* ── Services ── */
-#services .sh{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:4rem;gap:2rem;flex-wrap:wrap}
-#services .sh p{font-size:1rem;color:var(--muted);max-width:340px;line-height:1.7}
-.svc-list{display:flex;flex-direction:column;gap:0}
-.svc{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;padding:2rem 0;border-bottom:1px solid rgba(255,255,255,.06);transition:background .3s;cursor:default;position:relative}
-.svc::before{content:'';position:absolute;left:-4vw;right:-4vw;top:0;bottom:0;background:rgba(200,255,0,.03);opacity:0;transition:opacity .3s}
+/* ─── Services ─── */
+#services .s-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:2rem;margin-bottom:3rem}
+#services .s-sub{font-size:1rem;color:var(--muted);max-width:260px;line-height:1.7}
+.svc-list{display:flex;flex-direction:column}
+.svc{display:grid;grid-template-columns:2.5rem 1fr 3rem;align-items:center;gap:2rem;padding:1.75rem 0;border-bottom:1px solid var(--border);position:relative;transition:padding .3s var(--ease)}
+.svc::before{content:'';position:absolute;left:-5vw;right:-5vw;inset-block:0;background:rgba(200,255,0,.025);opacity:0;transition:opacity .3s}
 .svc:hover::before{opacity:1}
-.svc-n{font-family:var(--mono);font-size:.65rem;color:rgba(255,255,255,.2);letter-spacing:.1em;width:2rem}
-.svc-body h3{font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:700;letter-spacing:-.03em;transition:color .3s}
-.svc:hover .svc-body h3{color:var(--accent)}
-.svc-body p{font-size:.875rem;color:var(--muted);margin-top:.4rem;max-height:0;overflow:hidden;transition:max-height .4s var(--ease),opacity .3s;opacity:0}
-.svc:hover .svc-body p{max-height:60px;opacity:1}
-.svc-icon{width:48px;height:48px;border-radius:12px;background:var(--surface);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .3s,background .3s}
-.svc:hover .svc-icon{border-color:rgba(200,255,0,.3);background:rgba(200,255,0,.05)}
-.svc-icon svg{transition:transform .4s var(--ease)}
-.svc:hover .svc-icon svg{transform:rotate(12deg) scale(1.1)}
+.svc:hover{padding-left:.5rem;padding-right:.5rem}
+.svc-n{font-family:var(--mono);font-size:.58rem;color:rgba(255,255,255,.18);letter-spacing:.1em}
+.svc h3{font-size:clamp(1.1rem,2.2vw,1.6rem);font-weight:700;letter-spacing:-.03em;transition:color .25s}
+.svc:hover h3{color:var(--lime)}
+.svc p{font-size:.82rem;color:var(--muted);margin-top:.35rem;max-height:0;overflow:hidden;opacity:0;transition:max-height .4s var(--ease),opacity .3s}
+.svc:hover p{max-height:50px;opacity:1}
+.svc-ico{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:border-color .3s,background .3s}
+.svc:hover .svc-ico{border-color:rgba(200,255,0,.3);background:rgba(200,255,0,.06)}
+.svc-ico svg{transition:transform .4s var(--ease)}
+.svc:hover .svc-ico svg{transform:rotate(12deg) scale(1.1)}
 
-/* ── About ── */
-#about{background:var(--bg2);border-top:1px solid rgba(255,255,255,.06)}
+/* ─── About ─── */
+#about{background:var(--surface);border-top:1px solid var(--border)}
 .about-g{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center;max-width:1300px;margin:0 auto}
-@media(max-width:900px){.about-g{grid-template-columns:1fr}}
-.about-t h2{font-size:clamp(2.5rem,5vw,5rem);font-weight:700;letter-spacing:-.04em;line-height:1.05;margin-bottom:1.75rem}
-.about-t h2 em{font-style:normal;color:var(--accent)}
-.about-t p{color:var(--muted);font-size:1.05rem;line-height:1.8;margin-bottom:1.25rem}
-.about-t p:last-of-type{margin-bottom:2rem}
-.about-vis{position:relative;aspect-ratio:1;border-radius:24px;overflow:hidden;background:var(--surface);border:1px solid rgba(255,255,255,.06)}
+@media(max-width:860px){.about-g{grid-template-columns:1fr}}
+.about-t h2{font-size:clamp(2.5rem,4.5vw,5rem);font-weight:700;letter-spacing:-.04em;line-height:1.05;margin-bottom:1.5rem}
+.about-t h2 b{color:var(--lime);font-weight:inherit}
+.about-t p{color:var(--muted);font-size:1rem;line-height:1.8;margin-bottom:1.2rem}
+.about-vis{aspect-ratio:1;border-radius:24px;background:var(--bg);border:1px solid var(--border);overflow:hidden;position:relative}
 #aboutCanvas{width:100%;height:100%}
 
-/* ── Testimonial ── */
-.testi{position:relative;overflow:hidden;background:var(--accent);color:var(--bg);padding:clamp(4rem,8vw,8rem) 4vw;text-align:center}
-.testi blockquote{font-size:clamp(1.4rem,3.5vw,2.5rem);font-weight:700;letter-spacing:-.04em;line-height:1.25;max-width:900px;margin:0 auto 2rem}
-.testi cite{font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;opacity:.5}
-.testi-deco{position:absolute;font-size:40vw;font-weight:900;line-height:.8;color:rgba(8,8,8,.07);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;letter-spacing:-.05em;user-select:none}
+/* ─── Testimonial ─── */
+.testi{background:var(--lime);color:var(--bg);padding:clamp(4rem,8vw,7rem) 5vw;text-align:center;position:relative;overflow:hidden}
+.testi blockquote{font-size:clamp(1.4rem,3vw,2.4rem);font-weight:700;letter-spacing:-.04em;line-height:1.25;max-width:860px;margin:0 auto 1.75rem;position:relative;z-index:1}
+.testi cite{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;opacity:.5;position:relative;z-index:1}
+.testi-bg{position:absolute;font-size:30vw;font-weight:900;line-height:.8;color:rgba(6,6,8,.07);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;letter-spacing:-.05em;user-select:none}
 
-/* ── Process ── */
-#process{padding:clamp(5rem,10vw,10rem) 4vw}
-.proc-sh{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:2rem;margin-bottom:4rem}
-.proc-g{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
-@media(max-width:900px){.proc-g{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:500px){.proc-g{grid-template-columns:1fr}}
-.proc-card{padding:2.5rem 2rem;border-radius:20px;border:1px solid rgba(255,255,255,.06);background:var(--surface);opacity:0;transform:translateY(30px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-.proc-card.v{opacity:1;transform:translateY(0)}
-.proc-card:hover{border-color:rgba(200,255,0,.15);background:rgba(200,255,0,.02)}
-.proc-step{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--accent);margin-bottom:1.5rem;opacity:.6}
-.proc-card h3{font-size:1.1rem;font-weight:700;margin-bottom:.75rem;letter-spacing:-.02em}
-.proc-card p{font-size:.875rem;color:var(--muted);line-height:1.7}
+/* ─── Process ─── */
+.proc-g{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-top:3.5rem}
+@media(max-width:860px){.proc-g{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.proc-g{grid-template-columns:1fr}}
+.proc-c{padding:2.25rem 1.75rem;border-radius:18px;border:1px solid var(--border);background:var(--surface);opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.proc-c.v{opacity:1;transform:none}
+.proc-c:nth-child(2){transition-delay:.08s}
+.proc-c:nth-child(3){transition-delay:.16s}
+.proc-c:nth-child(4){transition-delay:.24s}
+.proc-c:hover{border-color:rgba(200,255,0,.18);background:rgba(200,255,0,.02)}
+.proc-step{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:var(--lime);opacity:.6;margin-bottom:1.25rem}
+.proc-c h3{font-size:1.05rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.65rem}
+.proc-c p{font-size:.82rem;color:var(--muted);line-height:1.7}
 
-/* ── Contact ── */
-#contact{background:var(--bg2);border-top:1px solid rgba(255,255,255,.06)}
+/* ─── Contact ─── */
+#contact{background:var(--surface);border-top:1px solid var(--border)}
 .contact-g{display:grid;grid-template-columns:1.1fr 1fr;gap:6vw;align-items:start;max-width:1300px;margin:0 auto}
-@media(max-width:900px){.contact-g{grid-template-columns:1fr;gap:3rem}}
-.contact-t .sh2{margin-top:.75rem;margin-bottom:1.5rem}
-.contact-t p{color:var(--muted);font-size:1rem;line-height:1.7;margin-bottom:2rem}
-.contact-meta{display:flex;flex-direction:column;gap:.75rem}
-.contact-meta a{font-family:var(--mono);font-size:.8rem;color:var(--muted);transition:color .2s;letter-spacing:.04em}
-.contact-meta a:hover{color:var(--accent)}
-.form{display:flex;flex-direction:column;gap:1rem}
+@media(max-width:860px){.contact-g{grid-template-columns:1fr;gap:3rem}}
+.contact-t .s-h2{margin:.75rem 0 1.5rem}
+.contact-t>p{color:var(--muted);font-size:.97rem;line-height:1.75;margin-bottom:1.75rem}
+.c-links{display:flex;flex-direction:column;gap:.6rem}
+.c-links a{font-family:var(--mono);font-size:.77rem;color:var(--muted);transition:color .2s;letter-spacing:.04em}
+.c-links a:hover{color:var(--lime)}
+.form{display:flex;flex-direction:column;gap:.9rem}
 .fw{position:relative}
-.fi{width:100%;padding:1.1rem 1rem .5rem;background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:12px;color:var(--fg);font-family:var(--font);font-size:.95rem;transition:border-color .2s,box-shadow .2s;outline:none;resize:vertical}
-.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,255,0,.1)}
-.fw label{position:absolute;top:50%;left:1rem;transform:translateY(-50%);font-size:.875rem;color:var(--muted);pointer-events:none;transition:top .2s,font-size .2s,color .2s}
+.fi{width:100%;padding:1.1rem 1rem .5rem;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:#fff;font-family:var(--font);font-size:.92rem;outline:none;resize:vertical;transition:border-color .2s,box-shadow .2s}
+.fi:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(200,255,0,.1)}
+.fw label{position:absolute;top:50%;left:1rem;transform:translateY(-50%);font-size:.85rem;color:var(--muted);pointer-events:none;transition:top .2s,font-size .2s,color .2s}
 .fw textarea~label{top:1.1rem;transform:none}
-.fi:not(:placeholder-shown)~label,.fi:focus~label{top:.55rem;transform:none;font-size:.65rem;color:var(--accent);letter-spacing:.05em}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-@media(max-width:500px){.form-row{grid-template-columns:1fr}}
-#fsuccess{font-family:var(--mono);font-size:.8rem;color:var(--accent);letter-spacing:.05em;display:none;padding:1rem 0}
+.fi:not(:placeholder-shown)~label,.fi:focus~label{top:.55rem;transform:none;font-size:.63rem;color:var(--lime);letter-spacing:.05em}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}}
+.sub-btn{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2rem;background:var(--lime);color:var(--bg);font-weight:700;font-size:.875rem;border-radius:100px;border:none;transition:transform .3s var(--ease),box-shadow .3s;position:relative;overflow:hidden;align-self:flex-start}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(200,255,0,.22)}
+.sub-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.18);transform:translateX(-100%);transition:transform .5s var(--ease)}
+.sub-btn:hover::before{transform:translateX(0)}
+#fsuccess{font-family:var(--mono);font-size:.78rem;color:var(--lime);letter-spacing:.05em;display:none;padding:.75rem 0}
 #fsuccess.show{display:block}
 
-/* ── Footer ── */
-footer{padding:2.5rem 4vw;border-top:1px solid rgba(255,255,255,.06)}
-.footer-i{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem}
-.flogo{font-size:1.1rem;font-weight:700;letter-spacing:-.04em}
-.flogo em{color:var(--accent);font-style:normal}
-.flinks{display:flex;gap:2rem}
-.flinks a{font-size:.8rem;color:var(--muted);transition:color .2s}
-.flinks a:hover{color:var(--fg)}
-.fcopy{font-size:.75rem;color:rgba(255,255,255,.2);font-family:var(--mono)}
+/* ─── Footer ─── */
+footer{padding:2.25rem 5vw;border-top:1px solid var(--border)}
+.foot-i{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.25rem}
+.flogo{font-size:1.05rem;font-weight:700;letter-spacing:-.04em}
+.flogo b{color:var(--lime)}
+.flinks{display:flex;gap:1.75rem}
+.flinks a{font-size:.78rem;color:var(--muted);transition:color .2s}
+.flinks a:hover{color:#fff}
+.fcopy{font-family:var(--mono);font-size:.68rem;color:rgba(255,255,255,.2)}
 
-/* ── Reveal utility ── */
-[data-r]{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
-[data-r].v{opacity:1;transform:translateY(0)}
+/* ─── Reveal utility ─── */
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+[data-r].v{opacity:1;transform:none}
 </style>
 </head>
 <body class="loading">
 
+<!-- SVG filter defs (invisible) -->
+<svg class="svg-defs" aria-hidden="true">
+  <defs>
+    <!-- glass shimmer -->
+    <filter id="glass" x="-50%" y="-50%" width="200%" height="200%">
+      <feTurbulence baseFrequency=".006" numOctaves="1" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5"/>
+    </filter>
+    <!-- gooey merge for buttons -->
+    <filter id="gooey" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="gooey"/>
+      <feComposite in="SourceGraphic" in2="gooey" operator="atop"/>
+    </filter>
+    <!-- text glow -->
+    <filter id="text-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- animated gradient for headline -->
+    <linearGradient id="hgrad" x1="0%" y1="0%" x2="100%" y2="100%" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="28%" stop-color="#c8ff00"/>
+      <stop offset="60%" stop-color="#00d4ff"/>
+      <stop offset="85%" stop-color="#ff3cac"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+</svg>
+
 <!-- Preloader -->
-<div id="preloader">
-  <div>
-    <div class="pre-logo">VOID<em>.</em></div>
-    <div class="pre-line" id="preLine"></div>
-    <div class="pre-pct"><span id="prePct">00</span></div>
-  </div>
+<div id="pre">
+  <div class="pre-logo">VOID<b>.</b></div>
+  <div class="pre-track"><div class="pre-fill" id="preFill"></div></div>
+  <div class="pre-pct"><span id="prePct">00</span></div>
 </div>
 
 <!-- Nav -->
 <nav id="nav">
-  <a href="#" class="nlogo">VOID<em>.</em></a>
+  <a href="#" class="nlogo">VOID<b>.</b></a>
   <ul class="nlinks">
     <li><a href="#work">Work</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <a href="#contact" class="ncta">Let's talk</a>
-  <button class="burger" id="burger"><span></span><span></span></button>
+  <div id="gooey-nav">
+    <button class="g-arrow" aria-hidden="true">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="#000" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <a href="#contact" class="g-main">Let's talk</a>
+  </div>
+  <button class="burger" id="burger" aria-label="menu"><span></span><span></span></button>
 </nav>
 <div id="mnav">
-  <a href="#work"><span>01</span> Work</a>
-  <a href="#services"><span>02</span> Services</a>
-  <a href="#about"><span>03</span> About</a>
-  <a href="#contact"><span>04</span> Contact</a>
+  <a href="#work"><b>01</b> Work</a>
+  <a href="#services"><b>02</b> Services</a>
+  <a href="#about"><b>03</b> About</a>
+  <a href="#contact"><b>04</b> Contact</a>
 </div>
 
-<!-- Hero -->
+<!-- ═══ HERO ═══ -->
 <section id="hero">
+  <!-- animated mesh blobs -->
+  <div class="blobs">
+    <div class="blob b1 a"></div>
+    <div class="blob b2 a"></div>
+    <div class="blob b3 a"></div>
+    <div class="blob b4 a"></div>
+  </div>
+  <div class="hero-overlay"></div>
   <canvas id="heroCanvas"></canvas>
-  <div class="hero-eyebrow" id="heyeb">Digital Experience Studio</div>
-  <h1 class="hero-h1">
+
+  <!-- glass pill badge -->
+  <div class="h-badge" id="hbadge">
+    <span class="badge-dot"></span>
+    <b>VOID Studio</b>&nbsp;·&nbsp;Digital Experience Agency
+  </div>
+
+  <!-- headline -->
+  <h1 class="h-title">
     <span class="hl"><span>We Build</span></span>
-    <span class="hl"><span><em>Impossible</em></span></span>
+    <span class="hl"><span class="grad">Impossible</span></span>
     <span class="hl"><span>Interfaces.</span></span>
   </h1>
-  <div class="hero-row">
-    <p class="hero-sub" id="hsub">Award-winning web experiences that merge art,<br>technology, and human behaviour into<br>unforgettable digital worlds.</p>
-    <div class="hero-btns" id="hbtns">
-      <a href="#work" class="btn-p">
-        <span>View our work</span>
-        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
-      </a>
-      <a href="#contact" class="btn-g">Start a project</a>
-    </div>
-    <div class="hero-scroll" id="hscroll">
-      <div class="scroll-bar"></div>
-      <span>Scroll to explore</span>
+
+  <div class="h-row">
+    <p class="h-sub" id="hsub">
+      Award-winning web experiences that merge art,<br>
+      technology, and human behaviour into<br>
+      unforgettable digital worlds.
+    </p>
+    <div class="h-btns" id="hbtns">
+      <!-- gooey primary button -->
+      <div class="btn-goo btn-primary-goo">
+        <div class="g-arr">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="#060608" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <a href="#work" class="g-pill">View our work</a>
+      </div>
+      <a href="#contact" class="btn-ghost-plain">Start a project</a>
     </div>
   </div>
-  <div class="hero-badge">
-    <div class="badge-ring"></div>
-    <div class="badge-text"><span class="badge-num">120<em style="color:var(--accent);font-style:normal">+</em></span>Projects<br>Delivered</div>
+
+  <!-- rotating text badge -->
+  <div class="spin-badge" id="spinBadge">
+    <div class="spin-inner">
+      <div class="spin-ring"></div>
+      <svg class="spin-text" viewBox="0 0 100 100">
+        <defs><path id="circ" d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"/></defs>
+        <text fill="rgba(255,255,255,0.45)" font-size="8.5" font-family="'Space Mono',monospace" letter-spacing="1">
+          <textPath href="#circ">VOID · STUDIO · WEB · DESIGN · AGENCY ·&nbsp;</textPath>
+        </text>
+      </svg>
+      <div class="spin-center"><b>120+</b>projects</div>
+    </div>
   </div>
 </section>
 
 <!-- Marquee -->
-<div class="marquee">
-  <div class="mtrack">
-    <span>Brand Identity</span><span class="dot">✦</span>
-    <span>Web Design</span><span class="dot">✦</span>
-    <span>3D Experiences</span><span class="dot">✦</span>
-    <span>Motion Design</span><span class="dot">✦</span>
-    <span>Digital Strategy</span><span class="dot">✦</span>
-    <span>UI / UX</span><span class="dot">✦</span>
-    <span>WebGL</span><span class="dot">✦</span>
-    <span>Creative Dev</span><span class="dot">✦</span>
-    <span>Brand Identity</span><span class="dot">✦</span>
-    <span>Web Design</span><span class="dot">✦</span>
-    <span>3D Experiences</span><span class="dot">✦</span>
-    <span>Motion Design</span><span class="dot">✦</span>
-    <span>Digital Strategy</span><span class="dot">✦</span>
-    <span>UI / UX</span><span class="dot">✦</span>
-    <span>WebGL</span><span class="dot">✦</span>
-    <span>Creative Dev</span><span class="dot">✦</span>
+<div class="mq">
+  <div class="mq-track">
+    <span>Brand Identity</span><span class="mq-dot">✦</span>
+    <span>Web Design</span><span class="mq-dot">✦</span>
+    <span>3D Experiences</span><span class="mq-dot">✦</span>
+    <span>Motion Design</span><span class="mq-dot">✦</span>
+    <span>Digital Strategy</span><span class="mq-dot">✦</span>
+    <span>UI / UX</span><span class="mq-dot">✦</span>
+    <span>WebGL</span><span class="mq-dot">✦</span>
+    <span>Creative Dev</span><span class="mq-dot">✦</span>
+    <span>Brand Identity</span><span class="mq-dot">✦</span>
+    <span>Web Design</span><span class="mq-dot">✦</span>
+    <span>3D Experiences</span><span class="mq-dot">✦</span>
+    <span>Motion Design</span><span class="mq-dot">✦</span>
+    <span>Digital Strategy</span><span class="mq-dot">✦</span>
+    <span>UI / UX</span><span class="mq-dot">✦</span>
+    <span>WebGL</span><span class="mq-dot">✦</span>
+    <span>Creative Dev</span><span class="mq-dot">✦</span>
   </div>
 </div>
 
-<!-- Work -->
+<!-- ═══ WORK ═══ -->
 <section id="work">
-  <div class="sh" style="margin-bottom:4rem">
+  <div class="s-head">
     <div>
       <span class="stag" data-r>Selected Work</span>
-      <h2 class="sh2" data-split-h>What we've built</h2>
+      <h2 class="s-h2" data-split>What we've built</h2>
     </div>
-    <a href="#contact" class="btn-g" data-r style="transition-delay:.2s">All projects →</a>
+    <a href="#contact" class="btn-ghost-plain" data-r style="transition-delay:.18s">All projects →</a>
   </div>
   <div class="work-grid">
-    <div class="wc"><div class="wc-img wg1"><div class="wc-shape ws1"></div></div><div class="wc-info"><span class="wc-tag">Brand / Web</span><h3>Neon Collective</h3><p>Full brand identity & immersive e-commerce experience</p></div><div class="wc-num">01</div><div class="wc-arrow"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div></div>
-    <div class="wc"><div class="wc-img wg2"><div class="wc-shape ws2"></div></div><div class="wc-info"><span class="wc-tag">Web / Motion</span><h3>Parallax Labs</h3><p>Scroll-driven storytelling for a deep-tech startup</p></div><div class="wc-num">02</div><div class="wc-arrow"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div></div>
-    <div class="wc"><div class="wc-img wg3"><div class="wc-shape ws3"></div></div><div class="wc-info"><span class="wc-tag">3D / Interactive</span><h3>Zenith Protocol</h3><p>WebGL product configurator with real-time rendering</p></div><div class="wc-num">03</div><div class="wc-arrow"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div></div>
-    <div class="wc"><div class="wc-img wg4"><div class="wc-shape ws4"></div></div><div class="wc-info"><span class="wc-tag">UI / UX</span><h3>Arc Dashboard</h3><p>Data visualisation platform for financial analytics</p></div><div class="wc-num">04</div><div class="wc-arrow"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div></div>
-    <div class="wc"><div class="wc-img wg5"><div class="wc-shape ws5"><span></span><span></span><span></span></div></div><div class="wc-info"><span class="wc-tag">Web / Brand</span><h3>Orbit Studios</h3><p>Award-winning portfolio for a creative collective</p></div><div class="wc-num">05</div><div class="wc-arrow"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div></div>
+    <div class="wc">
+      <div class="wc-img wg1"><div class="ws ws1"></div></div>
+      <div class="wc-info"><span class="wc-tag">Brand / Web</span><h3>Neon Collective</h3><p>Full brand identity & immersive e-commerce experience</p></div>
+      <div class="wc-num">01</div>
+      <div class="wc-link"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="wc">
+      <div class="wc-img wg2"><div class="ws ws2"></div></div>
+      <div class="wc-info"><span class="wc-tag">Web / Motion</span><h3>Parallax Labs</h3><p>Scroll-driven storytelling for a deep-tech startup</p></div>
+      <div class="wc-num">02</div>
+      <div class="wc-link"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="wc">
+      <div class="wc-img wg3"><div class="ws ws3"></div></div>
+      <div class="wc-info"><span class="wc-tag">3D / Interactive</span><h3>Zenith Protocol</h3><p>WebGL product configurator with real-time rendering</p></div>
+      <div class="wc-num">03</div>
+      <div class="wc-link"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="wc">
+      <div class="wc-img wg4"><div class="ws ws4"></div></div>
+      <div class="wc-info"><span class="wc-tag">UI / UX</span><h3>Arc Dashboard</h3><p>Data visualisation platform for financial analytics</p></div>
+      <div class="wc-num">04</div>
+      <div class="wc-link"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="wc">
+      <div class="wc-img wg5"><div class="ws ws5"><span></span><span></span><span></span></div></div>
+      <div class="wc-info"><span class="wc-tag">Web / Brand</span><h3>Orbit Studios</h3><p>Award-winning portfolio for a creative collective</p></div>
+      <div class="wc-num">05</div>
+      <div class="wc-link"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    </div>
   </div>
 </section>
 
-<!-- Stats -->
-<div class="stats">
+<!-- ═══ STATS ═══ -->
+<div class="stats-wrap">
   <div class="stats-g">
     <div class="stat"><div class="stat-n" data-cnt="120" data-suf="+">0+</div><div class="stat-l">Projects delivered</div></div>
     <div class="stat"><div class="stat-n" data-cnt="98" data-suf="%">0%</div><div class="stat-l">Client satisfaction</div></div>
@@ -344,36 +467,36 @@ footer{padding:2.5rem 4vw;border-top:1px solid rgba(255,255,255,.06)}
   </div>
 </div>
 
-<!-- Services -->
+<!-- ═══ SERVICES ═══ -->
 <section id="services">
-  <div class="sh">
+  <div class="s-head">
     <div>
       <span class="stag" data-r>What we do</span>
-      <h2 class="sh2" data-split-h>Our capabilities</h2>
+      <h2 class="s-h2" data-split>Our capabilities</h2>
     </div>
-    <p data-r style="transition-delay:.15s">Six disciplines,<br>one obsession:<br>digital excellence.</p>
+    <p class="s-sub" data-r style="transition-delay:.14s">Six disciplines,<br>one obsession:<br>digital excellence.</p>
   </div>
   <div class="svc-list">
-    <div class="svc" data-r><span class="svc-n">01</span><div class="svc-body"><h3>3D & WebGL</h3><p>Immersive Three.js experiences, product configurators, and interactive data visualisations.</p></div><div class="svc-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polygon points="10,2 18,6.5 18,13.5 10,18 2,13.5 2,6.5" stroke="#c8ff00" stroke-width="1.2"/><circle cx="10" cy="10" r="2.5" fill="#c8ff00" opacity=".4"/></svg></div></div>
-    <div class="svc" data-r style="transition-delay:.06s"><span class="svc-n">02</span><div class="svc-body"><h3>UI / UX Design</h3><p>Research-backed interfaces that convert beautifully — from wireframe to pixel-perfect delivery.</p></div><div class="svc-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#ff3cac" stroke-width="1.2"/><path d="M7 10h6M10 7v6" stroke="#ff3cac" stroke-width="1.2" stroke-linecap="round"/></svg></div></div>
-    <div class="svc" data-r style="transition-delay:.12s"><span class="svc-n">03</span><div class="svc-body"><h3>Motion Design</h3><p>GSAP, Framer Motion, and Lottie animations that give your brand a living, breathing presence.</p></div><div class="svc-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#00d4ff" stroke-width="1.2"/><path d="M5 10c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="#00d4ff" stroke-width="1.2" stroke-linecap="round"/></svg></div></div>
-    <div class="svc" data-r style="transition-delay:.18s"><span class="svc-n">04</span><div class="svc-body"><h3>Brand Identity</h3><p>Logo systems, design tokens, and brand guidelines that scale from business card to billboard.</p></div><div class="svc-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 16L10 4l6 12" stroke="#c8ff00" stroke-width="1.2" stroke-linecap="round"/><path d="M6 12h8" stroke="#c8ff00" stroke-width="1.2" stroke-linecap="round"/></svg></div></div>
-    <div class="svc" data-r style="transition-delay:.24s"><span class="svc-n">05</span><div class="svc-body"><h3>Web Development</h3><p>Next.js, React, and headless CMS builds optimised for performance, SEO, and developer experience.</p></div><div class="svc-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="11" rx="1.5" stroke="#ff3cac" stroke-width="1.2"/><path d="M7 15v1.5M13 15v1.5M5 17h10" stroke="#ff3cac" stroke-width="1.2" stroke-linecap="round"/></svg></div></div>
-    <div class="svc" data-r style="transition-delay:.30s"><span class="svc-n">06</span><div class="svc-body"><h3>Digital Strategy</h3><p>Digital audits, competitor analysis, and growth roadmaps aligned to your business objectives.</p></div><div class="svc-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l2 5.5h5.5l-4.5 3.5 2 5.5L10 14l-5 3.5 2-5.5L2.5 8.5H8z" stroke="#00d4ff" stroke-width="1.2" stroke-linejoin="round"/></svg></div></div>
+    <div class="svc" data-r><span class="svc-n">01</span><div><h3>3D & WebGL</h3><p>Immersive Three.js experiences, product configurators, and interactive data visualisations.</p></div><div class="svc-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><polygon points="9,1.5 16.5,5.5 16.5,12.5 9,16.5 1.5,12.5 1.5,5.5" stroke="#c8ff00" stroke-width="1.2"/><circle cx="9" cy="9" r="2" fill="#c8ff00" opacity=".4"/></svg></div></div>
+    <div class="svc" data-r style="transition-delay:.05s"><span class="svc-n">02</span><div><h3>UI / UX Design</h3><p>Research-backed interfaces that convert beautifully — from wireframe to pixel-perfect delivery.</p></div><div class="svc-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="#ff3cac" stroke-width="1.2"/><path d="M6 9h6M9 6v6" stroke="#ff3cac" stroke-width="1.2" stroke-linecap="round"/></svg></div></div>
+    <div class="svc" data-r style="transition-delay:.1s"><span class="svc-n">03</span><div><h3>Motion Design</h3><p>GSAP, Framer Motion, and Lottie animations that give your brand a living, breathing presence.</p></div><div class="svc-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#00d4ff" stroke-width="1.2"/><path d="M4 9c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="#00d4ff" stroke-width="1.2" stroke-linecap="round"/></svg></div></div>
+    <div class="svc" data-r style="transition-delay:.15s"><span class="svc-n">04</span><div><h3>Brand Identity</h3><p>Logo systems, design tokens, and brand guidelines that scale from business card to billboard.</p></div><div class="svc-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 15L9 3l6 12" stroke="#c8ff00" stroke-width="1.2" stroke-linecap="round"/><path d="M5.5 11h7" stroke="#c8ff00" stroke-width="1.2" stroke-linecap="round"/></svg></div></div>
+    <div class="svc" data-r style="transition-delay:.2s"><span class="svc-n">05</span><div><h3>Web Development</h3><p>Next.js, React, and headless CMS builds optimised for performance, SEO, and developer experience.</p></div><div class="svc-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1.5" y="3" width="15" height="10" rx="1.5" stroke="#ff3cac" stroke-width="1.2"/><path d="M6 13v1.5M12 13v1.5M4 15h10" stroke="#ff3cac" stroke-width="1.2" stroke-linecap="round"/></svg></div></div>
+    <div class="svc" data-r style="transition-delay:.25s"><span class="svc-n">06</span><div><h3>Digital Strategy</h3><p>Digital audits, competitor analysis, and growth roadmaps aligned to your business objectives.</p></div><div class="svc-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2l1.8 5.4H16L11.5 10l1.8 5.4L9 12.4l-4.3 3L6.5 10 2 7.4h5.2z" stroke="#00d4ff" stroke-width="1.2" stroke-linejoin="round"/></svg></div></div>
   </div>
 </section>
 
-<!-- About -->
+<!-- ═══ ABOUT ═══ -->
 <section id="about">
   <div class="about-g">
     <div class="about-t">
       <span class="stag" data-r>Who we are</span>
-      <h2 data-r style="transition-delay:.1s">A studio obsessed<br>with the <em>edge.</em></h2>
-      <p data-r style="transition-delay:.2s">VOID Studio is a boutique digital agency founded on one belief: the web is the most powerful creative medium alive. We push browsers beyond their limits — blending WebGL, generative art, and precise interaction design to craft experiences people remember.</p>
-      <p data-r style="transition-delay:.3s">Based everywhere. Working with brands that want to stand out, not blend in.</p>
-      <a href="#contact" class="btn-p" data-r style="transition-delay:.4s;display:inline-flex">
+      <h2 data-r style="transition-delay:.08s">A studio obsessed<br>with the <b>edge.</b></h2>
+      <p data-r style="transition-delay:.16s">VOID Studio is a boutique digital agency founded on one belief: the web is the most powerful creative medium alive. We push browsers beyond their limits — blending WebGL, generative art, and precise interaction design to craft experiences people remember.</p>
+      <p data-r style="transition-delay:.24s">Based everywhere. Working with brands that want to stand out, not blend in.</p>
+      <a href="#contact" class="sub-btn" data-r style="transition-delay:.32s">
         <span>Work with us</span>
-        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 11.5L11.5 1.5M11.5 1.5H3.5M11.5 1.5V9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </a>
     </div>
     <div class="about-vis">
@@ -382,37 +505,33 @@ footer{padding:2.5rem 4vw;border-top:1px solid rgba(255,255,255,.06)}
   </div>
 </section>
 
-<!-- Testimonial -->
+<!-- ═══ TESTIMONIAL ═══ -->
 <div class="testi" data-r>
-  <div class="testi-deco">❝</div>
-  <blockquote>Working with VOID felt like hiring the future. They delivered a site that made our competitors rethink their entire digital strategy.</blockquote>
+  <div class="testi-bg">❝</div>
+  <blockquote>"Working with VOID felt like hiring the future. They delivered a site that made our competitors rethink their entire digital strategy."</blockquote>
   <cite>— Jordan Marsh, CEO of Parallax Labs</cite>
 </div>
 
-<!-- Process -->
+<!-- ═══ PROCESS ═══ -->
 <section id="process">
-  <div class="proc-sh">
-    <div>
-      <span class="stag" data-r>How we work</span>
-      <h2 class="sh2" data-split-h>Our process</h2>
-    </div>
-  </div>
+  <span class="stag" data-r>How we work</span>
+  <h2 class="s-h2" data-split style="margin-bottom:0">Our process</h2>
   <div class="proc-g">
-    <div class="proc-card"><div class="proc-step">STEP 01</div><h3>Discovery</h3><p>We immerse ourselves in your brand, audience, and goals before writing a single line of code.</p></div>
-    <div class="proc-card"><div class="proc-step">STEP 02</div><h3>Design</h3><p>High-fidelity concepts that explore the visual language, motion principles, and interaction patterns.</p></div>
-    <div class="proc-card"><div class="proc-step">STEP 03</div><h3>Build</h3><p>We develop with performance and craft in mind — pixel-perfect, accessible, and fast.</p></div>
-    <div class="proc-card"><div class="proc-step">STEP 04</div><h3>Launch</h3><p>Deployment, QA, and ongoing support so your investment keeps delivering results.</p></div>
+    <div class="proc-c"><div class="proc-step">STEP 01</div><h3>Discovery</h3><p>We immerse ourselves in your brand, audience, and goals before writing a single line of code.</p></div>
+    <div class="proc-c"><div class="proc-step">STEP 02</div><h3>Design</h3><p>High-fidelity concepts that explore visual language, motion principles, and interaction patterns.</p></div>
+    <div class="proc-c"><div class="proc-step">STEP 03</div><h3>Build</h3><p>We develop with performance and craft in mind — pixel-perfect, accessible, and fast.</p></div>
+    <div class="proc-c"><div class="proc-step">STEP 04</div><h3>Launch</h3><p>Deployment, QA, and ongoing support so your investment keeps delivering results.</p></div>
   </div>
 </section>
 
-<!-- Contact -->
+<!-- ═══ CONTACT ═══ -->
 <section id="contact">
   <div class="contact-g">
     <div class="contact-t">
       <span class="stag" data-r>Get in touch</span>
-      <h2 class="sh2" data-split-h>Ready to build<br>something wild?</h2>
-      <p data-r style="transition-delay:.15s">Tell us about your project and we'll get back within 24 hours. We take on a limited number of projects each quarter.</p>
-      <div class="contact-meta" data-r style="transition-delay:.25s">
+      <h2 class="s-h2" data-split>Ready to build<br>something wild?</h2>
+      <p data-r style="transition-delay:.14s">Tell us about your project and we'll get back within 24 hours. We take on a limited number of projects each quarter.</p>
+      <div class="c-links" data-r style="transition-delay:.22s">
         <a href="mailto:hello@voidstudio.co">hello@voidstudio.co</a>
         <a href="#">voidstudio.co</a>
       </div>
@@ -424,15 +543,16 @@ footer{padding:2.5rem 4vw;border-top:1px solid rgba(255,255,255,.06)}
       </div>
       <div class="fw"><input type="text" id="fc" class="fi" placeholder=" "/><label for="fc">Company (optional)</label></div>
       <div class="fw"><textarea id="fm" class="fi" rows="5" placeholder=" " required></textarea><label for="fm">Tell us about your project</label></div>
-      <button type="submit" class="btn-p" style="align-self:flex-start"><span id="fbtxt">Send message</span><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></button>
+      <button type="submit" class="sub-btn"><span id="fbtxt">Send message</span><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 11.5L11.5 1.5M11.5 1.5H3.5M11.5 1.5V9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div id="fsuccess">✦ Message received — we'll be in touch soon.</div>
     </form>
   </div>
 </section>
 
+<!-- Footer -->
 <footer>
-  <div class="footer-i">
-    <div class="flogo">VOID<em>.</em></div>
+  <div class="foot-i">
+    <div class="flogo">VOID<b>.</b></div>
     <div class="flinks">
       <a href="#">Twitter</a><a href="#">Dribbble</a><a href="#">LinkedIn</a><a href="#">GitHub</a>
     </div>
@@ -441,446 +561,212 @@ footer{padding:2.5rem 4vw;border-top:1px solid rgba(255,255,255,.06)}
 </footer>
 
 <script>
-/* ══════════════════════════════════════════════════
+/* ═══════════════════════════════════════
    PRELOADER
-══════════════════════════════════════════════════ */
+═══════════════════════════════════════ */
 (function(){
-  const pct = document.getElementById('prePct');
-  const line = document.getElementById('preLine');
-  const loader = document.getElementById('preloader');
-  let n = 0;
-  setTimeout(() => line.classList.add('grow'), 100);
-  const t = setInterval(() => {
-    n += Math.random() * 3.5 + 0.5;
-    if (n >= 100) { n = 100; clearInterval(t); }
-    pct.textContent = String(Math.floor(n)).padStart(2, '0');
-    if (n >= 100) setTimeout(() => {
-      loader.classList.add('done');
-      document.body.classList.remove('loading');
-      initSite();
-    }, 700);
-  }, 38);
+  const fill=document.getElementById('preFill'),pct=document.getElementById('prePct'),pre=document.getElementById('pre');
+  let n=0;
+  const t=setInterval(()=>{
+    n+=Math.random()*3.2+.5; if(n>=100){n=100;clearInterval(t);}
+    fill.style.width=n+'%'; pct.textContent=String(Math.floor(n)).padStart(2,'0');
+    if(n>=100) setTimeout(()=>{pre.classList.add('out');document.body.classList.remove('loading');initSite();},650);
+  },36);
 })();
 
-/* ══════════════════════════════════════════════════
-   HERO CANVAS — Perspective-projected 3D sphere
-══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   HERO CANVAS — perspective-projected icosahedron
+═══════════════════════════════════════ */
 (function(){
-  const canvas = document.getElementById('heroCanvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, mouseX = 0, mouseY = 0;
-  let rotX = 0.3, rotY = 0, autoY = 0;
-  let targetX = 0.3, targetY = 0;
-
-  function resize(){
-    W = canvas.width = canvas.offsetWidth;
-    H = canvas.height = canvas.offsetHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  canvas.addEventListener('mousemove', e => {
-    const r = canvas.getBoundingClientRect();
-    mouseX = e.clientX - r.left;
-    mouseY = e.clientY - r.top;
-    targetY = ((mouseX / W) - 0.5) * 1.2;
-    targetX = ((mouseY / H) - 0.5) * 0.6 + 0.3;
+  const canvas=document.getElementById('heroCanvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,rotX=.25,rotY=0,autoY=0,tRX=.25,tRY=0;
+  function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+  resize(); window.addEventListener('resize',resize);
+  canvas.addEventListener('mousemove',e=>{
+    const r=canvas.getBoundingClientRect();
+    tRY=((e.clientX-r.left)/W-.5)*1.4;
+    tRX=((e.clientY-r.top)/H-.5)*.5+.25;
   });
 
-  /* Build icosahedron vertices + edges */
-  const phi = (1 + Math.sqrt(5)) / 2;
-  const icoVerts = [
-    [-1,phi,0],[1,phi,0],[-1,-phi,0],[1,-phi,0],
-    [0,-1,phi],[0,1,phi],[0,-1,-phi],[0,1,-phi],
-    [phi,0,-1],[phi,0,1],[-phi,0,-1],[-phi,0,1]
-  ].map(v => { const l = Math.hypot(...v); return v.map(x => x/l * 1.8); });
+  /* Icosahedron + one subdivision */
+  const phi=(1+Math.sqrt(5))/2;
+  let verts=[[-1,phi,0],[1,phi,0],[-1,-phi,0],[1,-phi,0],[0,-1,phi],[0,1,phi],[0,-1,-phi],[0,1,-phi],[phi,0,-1],[phi,0,1],[-phi,0,-1],[-phi,0,1]].map(v=>{const l=Math.hypot(...v);return v.map(x=>x/l*1.9);});
+  let faces=[[0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],[1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],[3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],[4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]];
+  const mc={};
+  function mid(a,b){const k=Math.min(a,b)+','+Math.max(a,b);if(mc[k]!==undefined)return mc[k];const m=verts[a].map((v,i)=>(v+verts[b][i])/2),l=Math.hypot(...m);verts.push(m.map(x=>x/l*1.9));return(mc[k]=verts.length-1);}
+  const f2=[];faces.forEach(([a,b,c])=>{const ab=mid(a,b),bc=mid(b,c),ca=mid(c,a);f2.push([a,ab,ca],[b,bc,ab],[c,ca,bc],[ab,bc,ca]);});faces=f2;
+  const es=new Set(),edges=[];
+  faces.forEach(([a,b,c])=>[[a,b],[b,c],[c,a]].forEach(([p,q])=>{const k=Math.min(p,q)+','+Math.max(p,q);if(!es.has(k)){es.add(k);edges.push([p,q]);}}));
 
-  const icoFaces = [
-    [0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],
-    [1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],
-    [3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],
-    [4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]
-  ];
-
-  /* Subdivide once for denser wireframe */
-  function midpoint(a, b) {
-    const m = a.map((v,i) => (v + b[i]) / 2);
-    const l = Math.hypot(...m);
-    return m.map(x => x / l * 1.8);
+  function rot(v,rx,ry){
+    const[x,y,z]=v,cx=Math.cos(rx),sx=Math.sin(rx),cy=Math.cos(ry),sy=Math.sin(ry);
+    const y2=y*cx-z*sx,z2=y*sx+z*cx,x3=x*cy+z2*sy,z3=-x*sy+z2*cy;
+    return[x3,y2,z3];
   }
 
-  let verts = [...icoVerts];
-  let faces = [...icoFaces];
-  const midCache = {};
-  function getMid(a, b) {
-    const key = Math.min(a,b)+','+Math.max(a,b);
-    if (midCache[key] !== undefined) return midCache[key];
-    verts.push(midpoint(verts[a], verts[b]));
-    return (midCache[key] = verts.length - 1);
-  }
+  /* particles */
+  const pts=Array.from({length:55},()=>({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.0003,vy:(Math.random()-.5)*.0003,r:Math.random()*.7+.25,a:Math.random()*.3+.05}));
 
-  const faces2 = [];
-  faces.forEach(([a,b,c]) => {
-    const ab = getMid(a,b), bc = getMid(b,c), ca = getMid(c,a);
-    faces2.push([a,ab,ca],[b,bc,ab],[c,ca,bc],[ab,bc,ca]);
-  });
-  faces = faces2;
-
-  /* Build edge set */
-  const edgeSet = new Set();
-  const edges = [];
-  faces.forEach(([a,b,c]) => {
-    [[a,b],[b,c],[c,a]].forEach(([p,q]) => {
-      const key = Math.min(p,q)+','+Math.max(p,q);
-      if (!edgeSet.has(key)) { edgeSet.add(key); edges.push([p,q]); }
-    });
-  });
-
-  /* Rotation matrices */
-  function rotMat(rx, ry) {
-    const cx = Math.cos(rx), sx = Math.sin(rx);
-    const cy = Math.cos(ry), sy = Math.sin(ry);
-    return {
-      transform([x,y,z]) {
-        const y2 = y*cx - z*sx, z2 = y*sx + z*cx;
-        const x3 = x*cy + z2*sy, z3 = -x*sy + z2*cy;
-        return [x3, y2, z3];
-      }
-    };
-  }
-
-  /* Particles drifting in bg */
-  const particles = Array.from({length:60}, () => ({
-    x: Math.random(), y: Math.random(),
-    vx: (Math.random()-.5)*.0004, vy: (Math.random()-.5)*.0004,
-    r: Math.random()*.8+.3, a: Math.random()*.4+.05
-  }));
-
-  let frame = 0;
-  function draw() {
-    ctx.clearRect(0,0,W,H);
-
-    /* Particles */
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if(p.x<0)p.x=1; if(p.x>1)p.x=0;
-      if(p.y<0)p.y=1; if(p.y>1)p.y=0;
-      ctx.beginPath();
-      ctx.arc(p.x*W, p.y*H, p.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(200,255,0,${p.a})`;
-      ctx.fill();
-    });
-
-    /* Smooth mouse follow */
-    rotX += (targetX - rotX) * 0.04;
-    rotY += (targetY + autoY - rotY) * 0.04;
-    autoY += 0.004;
-
-    const mat = rotMat(rotX, rotY);
-    const cx = W * 0.65, cy = H * 0.5;
-    const scale = Math.min(W, H) * 0.32;
-    const fov = 2.5;
-
-    /* Project vertices */
-    const proj = verts.map(v => {
-      const [x, y, z] = mat.transform(v);
-      const d = fov / (fov + z);
-      return { sx: cx + x*scale*d, sy: cy - y*scale*d, z, d };
-    });
-
-    /* Draw edges sorted by avg Z (painter's algo) */
-    const drawEdges = edges.map(([a,b]) => ({
-      a, b, z: (proj[a].z + proj[b].z) / 2
-    }));
-    drawEdges.sort((a,b) => a.z - b.z);
-
-    drawEdges.forEach(({a, b, z}) => {
-      const pa = proj[a], pb = proj[b];
-      const depth = (z + 1.8) / 3.6;
-      const alpha = depth * 0.55 + 0.08;
-      ctx.beginPath();
-      ctx.moveTo(pa.sx, pa.sy);
-      ctx.lineTo(pb.sx, pb.sy);
-
-      /* Color shift by depth */
-      if (depth > 0.65) {
-        ctx.strokeStyle = `rgba(200,255,0,${alpha})`;
-      } else if (depth > 0.35) {
-        ctx.strokeStyle = `rgba(0,212,255,${alpha*.7})`;
-      } else {
-        ctx.strokeStyle = `rgba(255,60,172,${alpha*.4})`;
-      }
-      ctx.lineWidth = depth * 1.0 + 0.2;
-      ctx.stroke();
-    });
-
-    /* Draw vertices */
-    proj.forEach(({sx, sy, z, d}) => {
-      const depth = (z + 1.8) / 3.6;
-      if (depth < 0.4) return;
-      ctx.beginPath();
-      ctx.arc(sx, sy, depth*2, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(200,255,0,${depth*0.6})`;
-      ctx.fill();
-    });
-
-    /* Glow at center */
-    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, scale*0.6);
-    grd.addColorStop(0, 'rgba(200,255,0,0.04)');
-    grd.addColorStop(1, 'rgba(200,255,0,0)');
-    ctx.fillStyle = grd;
-    ctx.fillRect(cx-scale, cy-scale, scale*2, scale*2);
-
-    frame++;
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/* ══════════════════════════════════════════════════
-   ABOUT CANVAS — Plasma / noise sphere
-══════════════════════════════════════════════════ */
-(function(){
-  const canvas = document.getElementById('aboutCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H, t = 0;
-
-  function resize(){
-    const rect = canvas.parentElement.getBoundingClientRect();
-    W = canvas.width = rect.width || 400;
-    H = canvas.height = rect.height || 400;
-  }
-  resize();
-  new ResizeObserver(resize).observe(canvas.parentElement);
-
-  /* Draw animated orbiting rings + glowing core */
   function draw(){
     ctx.clearRect(0,0,W,H);
-    const cx = W/2, cy = H/2;
-    const r = Math.min(W,H) * 0.36;
-
-    /* Background glow */
-    const bg = ctx.createRadialGradient(cx,cy,0,cx,cy,r*1.4);
-    bg.addColorStop(0,'rgba(200,255,0,0.04)');
-    bg.addColorStop(0.5,'rgba(0,212,255,0.02)');
-    bg.addColorStop(1,'transparent');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0,0,W,H);
-
-    /* Orbiting rings */
-    const rings = [
-      {a:t*0.7, tilt:70, w:r*1.0, col:'rgba(200,255,0,', lw:1.5},
-      {a:t*0.45+1, tilt:55, w:r*1.3, col:'rgba(255,60,172,', lw:1.0},
-      {a:t*0.3+2, tilt:80, w:r*1.6, col:'rgba(0,212,255,', lw:0.8},
-    ];
-
-    rings.forEach(ring => {
-      const ry = ring.w;
-      const rx = ry * Math.abs(Math.cos(ring.tilt * Math.PI / 180));
-      const alpha = 0.5 + Math.sin(t*0.5)*0.15;
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(ring.a);
-      ctx.beginPath();
-      ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI*2);
-      ctx.strokeStyle = ring.col + alpha + ')';
-      ctx.lineWidth = ring.lw;
-      ctx.stroke();
-      /* Dot on ring */
-      const dx = Math.cos(t) * rx, dy = Math.sin(t) * ry;
-      ctx.beginPath();
-      ctx.arc(dx, dy, 4, 0, Math.PI*2);
-      ctx.fillStyle = ring.col + '0.9)';
-      ctx.fill();
-      ctx.restore();
+    /* particles */
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=1;if(p.x>1)p.x=0;if(p.y<0)p.y=1;if(p.y>1)p.y=0;
+      ctx.beginPath();ctx.arc(p.x*W,p.y*H,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,255,0,${p.a})`;ctx.fill();
     });
-
-    /* Orbiting dots */
-    for (let i = 0; i < 6; i++){
-      const angle = t * 0.8 + i * Math.PI / 3;
-      const orbitR = r * 0.75;
-      const dx = cx + Math.cos(angle) * orbitR;
-      const dy = cy + Math.sin(angle) * orbitR * 0.4;
-      const dotR = 3.5;
-      const cols = ['rgba(200,255,0,', 'rgba(255,60,172,', 'rgba(0,212,255,'];
-      ctx.beginPath();
-      ctx.arc(dx, dy, dotR, 0, Math.PI*2);
-      ctx.fillStyle = cols[i%3] + '0.85)';
-      ctx.fill();
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = cols[i%3] + '0.6)';
-      ctx.fill();
-      ctx.shadowBlur = 0;
-    }
-
-    /* Core */
-    const pulse = 1 + Math.sin(t*2)*0.08;
-    const core = ctx.createRadialGradient(cx,cy,0,cx,cy,r*0.22*pulse);
-    core.addColorStop(0,'rgba(200,255,0,0.9)');
-    core.addColorStop(0.4,'rgba(200,255,0,0.3)');
-    core.addColorStop(1,'rgba(200,255,0,0)');
-    ctx.fillStyle = core;
-    ctx.beginPath();
-    ctx.arc(cx,cy,r*0.22*pulse,0,Math.PI*2);
-    ctx.fill();
-
-    /* Inner detail lines */
-    for (let i = 0; i < 3; i++){
-      const a1 = t * (0.5+i*0.2) + i*2;
-      const a2 = a1 + Math.PI;
-      ctx.beginPath();
-      ctx.moveTo(cx + Math.cos(a1)*r*0.15, cy + Math.sin(a1)*r*0.15);
-      ctx.lineTo(cx + Math.cos(a1)*r*0.5, cy + Math.sin(a1)*r*0.5);
-      ctx.moveTo(cx + Math.cos(a2)*r*0.15, cy + Math.sin(a2)*r*0.15);
-      ctx.lineTo(cx + Math.cos(a2)*r*0.5, cy + Math.sin(a2)*r*0.5);
-      const colA = ['rgba(200,255,0,0.2)', 'rgba(255,60,172,0.15)', 'rgba(0,212,255,0.15)'];
-      ctx.strokeStyle = colA[i];
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
-
-    t += 0.018;
+    rotX+=(tRX-rotX)*.035; rotY+=(tRY+autoY-rotY)*.035; autoY+=.0035;
+    const cx=W*.62,cy=H*.5,sc=Math.min(W,H)*.3,fov=2.5;
+    const proj=verts.map(v=>{const[x,y,z]=rot(v,rotX,rotY),d=fov/(fov+z);return{sx:cx+x*sc*d,sy:cy-y*sc*d,z,d};});
+    const de=edges.map(([a,b])=>({a,b,z:(proj[a].z+proj[b].z)/2})).sort((a,b)=>a.z-b.z);
+    de.forEach(({a,b,z})=>{
+      const pa=proj[a],pb=proj[b],dep=(z+1.9)/3.8,al=dep*.5+.06;
+      ctx.beginPath();ctx.moveTo(pa.sx,pa.sy);ctx.lineTo(pb.sx,pb.sy);
+      ctx.strokeStyle=dep>.6?`rgba(200,255,0,${al})`:dep>.35?`rgba(0,212,255,${al*.7})`:`rgba(255,60,172,${al*.45})`;
+      ctx.lineWidth=dep*.9+.15;ctx.stroke();
+    });
+    proj.forEach(({sx,sy,z})=>{const d=(z+1.9)/3.8;if(d<.45)return;ctx.beginPath();ctx.arc(sx,sy,d*2,0,Math.PI*2);ctx.fillStyle=`rgba(200,255,0,${d*.55})`;ctx.fill();});
     requestAnimationFrame(draw);
   }
   draw();
 })();
 
+/* ═══════════════════════════════════════
+   ABOUT CANVAS
+═══════════════════════════════════════ */
+(function(){
+  const cv=document.getElementById('aboutCanvas');if(!cv)return;
+  const ctx=cv.getContext('2d');let W,H,t=0;
+  function sz(){const r=cv.parentElement.getBoundingClientRect();W=cv.width=r.width||400;H=cv.height=r.height||400;}
+  sz();new ResizeObserver(sz).observe(cv.parentElement);
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const cx=W/2,cy=H/2,r=Math.min(W,H)*.38;
+    const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,r*1.5);
+    bg.addColorStop(0,'rgba(200,255,0,.04)');bg.addColorStop(.5,'rgba(0,212,255,.02)');bg.addColorStop(1,'transparent');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    [[t*.65,68,r,.55,'rgba(200,255,0,'],[t*.42+1,52,r*1.3,.38,'rgba(255,60,172,'],[t*.28+2,78,r*1.6,.3,'rgba(0,212,255,']].forEach(([a,tilt,rr,al,col])=>{
+      const ry=rr,rx=ry*Math.abs(Math.cos(tilt*Math.PI/180));
+      ctx.save();ctx.translate(cx,cy);ctx.rotate(a);
+      ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);
+      ctx.strokeStyle=col+(al+Math.sin(t*.4)*.08)+')';ctx.lineWidth=1.4;ctx.stroke();
+      const dx=Math.cos(t)*rx,dy=Math.sin(t)*ry;
+      ctx.beginPath();ctx.arc(dx,dy,4.5,0,Math.PI*2);ctx.fillStyle=col+'.85)';ctx.fill();
+      ctx.restore();
+    });
+    for(let i=0;i<6;i++){
+      const a=t*.75+i*Math.PI/3,ox=cx+Math.cos(a)*r*.72,oy=cy+Math.sin(a)*r*.38;
+      const c=['rgba(200,255,0,','rgba(255,60,172,','rgba(0,212,255,'][i%3];
+      ctx.beginPath();ctx.arc(ox,oy,3.5,0,Math.PI*2);
+      ctx.fillStyle=c+'.85)';ctx.shadowColor=c+'.5)';ctx.shadowBlur=10;ctx.fill();ctx.shadowBlur=0;
+    }
+    const p=(1+Math.sin(t*2))*.5,core=ctx.createRadialGradient(cx,cy,0,cx,cy,r*(.2+p*.04));
+    core.addColorStop(0,'rgba(200,255,0,.92)');core.addColorStop(.45,'rgba(200,255,0,.28)');core.addColorStop(1,'rgba(200,255,0,0)');
+    ctx.fillStyle=core;ctx.beginPath();ctx.arc(cx,cy,r*(.2+p*.04),0,Math.PI*2);ctx.fill();
+    for(let i=0;i<3;i++){
+      const a=t*(.45+i*.18)+i*2;
+      ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*r*.12,cy+Math.sin(a)*r*.12);ctx.lineTo(cx+Math.cos(a)*r*.48,cy+Math.sin(a)*r*.48);
+      ctx.moveTo(cx+Math.cos(a+Math.PI)*r*.12,cy+Math.sin(a+Math.PI)*r*.12);ctx.lineTo(cx+Math.cos(a+Math.PI)*r*.48,cy+Math.sin(a+Math.PI)*r*.48);
+      ctx.strokeStyle=['rgba(200,255,0,.18)','rgba(255,60,172,.13)','rgba(0,212,255,.13)'][i];ctx.lineWidth=1;ctx.stroke();
+    }
+    t+=.016;requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
-/* ══════════════════════════════════════════════════
+/* ═══════════════════════════════════════
    NAV
-══════════════════════════════════════════════════ */
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => nav.classList.toggle('s', window.scrollY > 50), {passive:true});
-const burger = document.getElementById('burger');
-const mnav = document.getElementById('mnav');
-let open = false;
-burger.addEventListener('click', () => {
-  open = !open;
-  mnav.classList.toggle('open', open);
-  const [s1,s2] = burger.querySelectorAll('span');
-  if (open) { s1.style.transform='rotate(45deg) translate(4px,4px)'; s2.style.transform='rotate(-45deg) translate(4px,-4px)'; }
-  else { s1.style.transform=''; s2.style.transform=''; }
+═══════════════════════════════════════ */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('s',window.scrollY>50),{passive:true});
+const burger=document.getElementById('burger'),mnav=document.getElementById('mnav');
+let mopen=false;
+burger.addEventListener('click',()=>{
+  mopen=!mopen;mnav.classList.toggle('open',mopen);
+  const[s1,s2]=burger.querySelectorAll('span');
+  s1.style.transform=mopen?'rotate(45deg) translate(4px,4px)':'';
+  s2.style.transform=mopen?'rotate(-45deg) translate(4px,-4px)':'';
 });
-mnav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-  open = false; mnav.classList.remove('open');
-  burger.querySelectorAll('span').forEach(s => s.style.transform='');
-}));
+mnav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mopen=false;mnav.classList.remove('open');burger.querySelectorAll('span').forEach(s=>s.style.transform='');}));
 
-/* ══════════════════════════════════════════════════
-   SITE INIT (after preloader)
-══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   SITE INIT
+═══════════════════════════════════════ */
 function initSite(){
-  /* Hero text reveal */
-  setTimeout(() => {
-    document.querySelectorAll('.hero-h1 .hl').forEach((el,i) =>
-      setTimeout(() => el.classList.add('v'), i*160));
-    setTimeout(() => document.getElementById('heyeb')?.classList.add('v'), 100);
-    setTimeout(() => document.getElementById('hsub')?.classList.add('v'), 500);
-    setTimeout(() => document.getElementById('hbtns')?.classList.add('v'), 650);
-    setTimeout(() => document.getElementById('hscroll')?.classList.add('v'), 900);
-  }, 100);
+  /* Hero text */
+  setTimeout(()=>{
+    document.getElementById('hbadge')?.classList.add('v');
+    document.querySelectorAll('.h-title .hl').forEach((el,i)=>setTimeout(()=>el.classList.add('v'),i*160+80));
+    setTimeout(()=>document.getElementById('hsub')?.classList.add('v'),520);
+    setTimeout(()=>document.getElementById('hbtns')?.classList.add('v'),680);
+    setTimeout(()=>document.getElementById('spinBadge')?.classList.add('v'),900);
+  },100);
 
   /* Hero parallax */
-  const heroSec = document.getElementById('hero');
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY, h = window.innerHeight;
-    if (y < h) {
-      heroSec.querySelectorAll('.hero-h1,.hero-eyebrow,.hero-row').forEach(el => {
-        el.style.transform = `translateY(${y * 0.28}px)`;
-        el.style.opacity = 1 - y / (h * 0.75);
+  const heroEl=document.getElementById('hero');
+  window.addEventListener('scroll',()=>{
+    const y=window.scrollY,h=window.innerHeight;
+    if(y<h){
+      heroEl.querySelectorAll('.h-title,.h-badge,.h-row').forEach(el=>{
+        el.style.transform=`translateY(${y*.3}px)`;
+        el.style.opacity=String(1-y/(h*.72));
       });
     }
-  }, {passive:true});
+  },{passive:true});
 
-  /* Split text headings */
-  document.querySelectorAll('[data-split-h]').forEach(el => {
-    el.innerHTML = el.innerHTML.split('').map(ch => {
-      if (ch === ' ') return '<span class="char" style="display:inline-block">&nbsp;</span>';
-      if (ch === '<') return '<';
-      return `<span class="char">${ch}</span>`;
+  /* Split headings */
+  document.querySelectorAll('[data-split]').forEach(el=>{
+    el.innerHTML=el.innerHTML.split('').map(ch=>{
+      if(ch===' ')return'<span class="char" style="display:inline-block">&nbsp;</span>';
+      if(ch==='<')return'<';
+      return`<span class="char">${ch}</span>`;
     }).join('');
-    el.querySelectorAll('.char').forEach((c,i) => c.style.transitionDelay = (i*0.022)+'s');
+    el.querySelectorAll('.char').forEach((c,i)=>c.style.transitionDelay=(i*.024)+'s');
   });
 
-  /* IntersectionObserver for all reveals */
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const el = entry.target;
-      el.classList.add('v');
-      io.unobserve(el);
-    });
-  }, {threshold: 0.12});
-
-  document.querySelectorAll('[data-r],[data-split-h],.sh2,.wc,.proc-card,.testi').forEach(el => io.observe(el));
+  /* IntersectionObserver */
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('v');io.unobserve(e.target);});
+  },{threshold:.1});
+  document.querySelectorAll('[data-r],[data-split],.s-h2,.wc,.proc-c,.testi').forEach(el=>io.observe(el));
 
   /* Stats counter */
-  const statsIO = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      e.target.querySelectorAll('[data-cnt]').forEach((el, i) => {
-        const target = +el.dataset.cnt, suf = el.dataset.suf || '';
-        let cur = 0;
-        setTimeout(() => {
-          const step = Math.ceil(target / 55);
-          const t = setInterval(() => {
-            cur = Math.min(cur + step, target);
-            el.textContent = cur + suf;
-            if (cur >= target) clearInterval(t);
-          }, 18);
-        }, i * 100);
+  const sIO=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting)return;
+      e.target.querySelectorAll('[data-cnt]').forEach((el,i)=>{
+        const t=+el.dataset.cnt,s=el.dataset.suf||'';
+        let c=0;setTimeout(()=>{const ti=setInterval(()=>{c=Math.min(c+Math.ceil(t/55),t);el.textContent=c+s;if(c>=t)clearInterval(ti);},17);},i*100);
       });
-      statsIO.unobserve(e.target);
+      sIO.unobserve(e.target);
     });
-  }, {threshold: 0.4});
-  const statsEl = document.querySelector('.stats-g');
-  if (statsEl) statsIO.observe(statsEl);
+  },{threshold:.4});
+  const sg=document.querySelector('.stats-g');if(sg)sIO.observe(sg);
 }
 
-/* ══════════════════════════════════════════════════
+/* ═══════════════════════════════════════
    CARD TILT
-══════════════════════════════════════════════════ */
-document.querySelectorAll('.wc').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const rx = ((e.clientY - (r.top + r.height/2)) / (r.height/2)) * -6;
-    const ry = ((e.clientX - (r.left + r.width/2)) / (r.width/2)) * 6;
-    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.01)`;
-    card.style.boxShadow = `${-ry*.5}px ${-rx*.5}px 50px rgba(200,255,0,0.08)`;
+═══════════════════════════════════════ */
+document.querySelectorAll('.wc').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect(),rx=((e.clientY-(r.top+r.height/2))/(r.height/2))*-5,ry=((e.clientX-(r.left+r.width/2))/(r.width/2))*5;
+    c.style.transform=`perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.015)`;
+    c.style.boxShadow=`${-ry*.4}px ${-rx*.4}px 40px rgba(200,255,0,.07)`;
   });
-  card.addEventListener('mouseleave', () => { card.style.transform=''; card.style.boxShadow=''; });
+  c.addEventListener('mouseleave',()=>{c.style.transform='';c.style.boxShadow='';});
 });
 
-/* ══════════════════════════════════════════════════
-   MAGNETIC BUTTONS
-══════════════════════════════════════════════════ */
-document.querySelectorAll('.btn-p,.btn-g,.ncta').forEach(el => {
-  el.addEventListener('mousemove', e => {
-    const r = el.getBoundingClientRect();
-    const dx = e.clientX-(r.left+r.width/2), dy = e.clientY-(r.top+r.height/2);
-    el.style.transform = `translate(${dx*.22}px,${dy*.22}px)`;
-  });
-  el.addEventListener('mouseleave', () => el.style.transform = '');
+/* ═══════════════════════════════════════
+   FORM
+═══════════════════════════════════════ */
+const cf=document.getElementById('cform');
+if(cf)cf.addEventListener('submit',e=>{
+  e.preventDefault();
+  const btn=cf.querySelector('.sub-btn');
+  document.getElementById('fbtxt').textContent='Sending…';btn.disabled=true;
+  setTimeout(()=>{btn.style.display='none';document.getElementById('fsuccess').classList.add('show');cf.querySelectorAll('.fi').forEach(f=>f.value='');},1200);
 });
-
-/* ══════════════════════════════════════════════════
-   CONTACT FORM
-══════════════════════════════════════════════════ */
-const cform = document.getElementById('cform');
-if (cform) {
-  cform.addEventListener('submit', e => {
-    e.preventDefault();
-    const btn = cform.querySelector('button[type=submit]');
-    document.getElementById('fbtxt').textContent = 'Sending…';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.style.display = 'none';
-      document.getElementById('fsuccess').classList.add('show');
-      cform.querySelectorAll('.fi').forEach(f => f.value = '');
-    }, 1200);
-  });
-}
 </script>
 </body>
 </html>
